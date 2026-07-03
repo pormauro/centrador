@@ -61,9 +61,12 @@ Eso guarda capturas en `logs\camera_probe`. Elegí el índice correcto y ponelo 
 ```yaml
 camera:
   index: 0
+  backend: dshow
 ```
 
 dentro de `config\config.yaml`.
+
+`backend` selecciona el medio de captura de la cámara. Valores disponibles: `dshow`, `msmf` o `default`. Tanto `run_sin_arduino.bat` como `run.bat` usan este valor guardado.
 
 6. Probar el Arduino:
 

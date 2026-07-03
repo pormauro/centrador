@@ -18,6 +18,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     },
     "camera": {
         "index": 0,
+        "backend": "dshow",
         "width": 1280,
         "height": 720,
         "fps": 30,

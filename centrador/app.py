@@ -100,6 +100,7 @@ class CenteringApp:
         ttk.Label(self.panel, text="Ajustes rápidos", font=("Segoe UI", 11, "bold")).pack(anchor="w")
 
         self.com_entry = self._labeled_entry("Puerto COM", "serial.port")
+        self.camera_backend_combo = self._labeled_combo("Medio cámara", "camera.backend", ["dshow", "msmf", "default"])
         self.tolerance_entry = self._labeled_entry("Tolerancia px", "control.tolerance_px")
         self.medium_entry = self._labeled_entry("Error medio px", "control.medium_error_px")
         self.pxmm_entry = self._labeled_entry("px por mm", "calibration.px_per_mm")
@@ -125,6 +126,17 @@ class CenteringApp:
         entry.dotted = dotted  # type: ignore[attr-defined]
         return entry
 
+    def _labeled_combo(self, label: str, dotted: str, values: list[str]) -> ttk.Combobox:
+        frame = ttk.Frame(self.panel)
+        frame.pack(fill=tk.X, pady=2)
+        ttk.Label(frame, text=label, width=16).pack(side=tk.LEFT)
+        combo = ttk.Combobox(frame, values=values, state="readonly", width=16)
+        current = str(self.config.get(dotted, values[0]))
+        combo.set(current if current in values else values[0])
+        combo.pack(side=tk.RIGHT, fill=tk.X, expand=True)
+        combo.dotted = dotted  # type: ignore[attr-defined]
+        return combo
+
     def _bind_keys(self) -> None:
         self.root.bind("<Escape>", lambda _e: self.shutdown())
         self.root.bind("a", lambda _e: self._toggle_auto_from_key())
@@ -140,11 +152,13 @@ class CenteringApp:
 
     def _open_camera(self) -> None:
         cam_index = int(self.config.get("camera.index", 0))
-        self.capture = cv2.VideoCapture(cam_index, cv2.CAP_DSHOW)
-        if not self.capture.isOpened():
+        backend = str(self.config.get("camera.backend", "dshow")).lower()
+        api = {"dshow": cv2.CAP_DSHOW, "msmf": cv2.CAP_MSMF}.get(backend)
+        self.capture = cv2.VideoCapture(cam_index, api) if api is not None else cv2.VideoCapture(cam_index)
+        if not self.capture.isOpened() and api is not None:
             self.capture = cv2.VideoCapture(cam_index)
         if not self.capture.isOpened():
-            self.logger.error("No se pudo abrir cámara index=%s", cam_index)
+            self.logger.error("No se pudo abrir cámara index=%s backend=%s", cam_index, backend)
             return
         width = int(self.config.get("camera.width", 1280))
         height = int(self.config.get("camera.height", 720))
@@ -161,7 +175,7 @@ class CenteringApp:
         gain = self.config.get("camera.gain")
         if gain is not None:
             self.capture.set(cv2.CAP_PROP_GAIN, float(gain))
-        self.logger.info("Camara abierta index=%s", cam_index)
+        self.logger.info("Camara abierta index=%s backend=%s", cam_index, backend)
 
     def _reopen_camera(self) -> None:
         if self.capture is not None:
@@ -407,7 +421,7 @@ class CenteringApp:
             self._save_config()
 
     def _apply_entries(self) -> None:
-        entries = [self.com_entry, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
+        entries = [self.com_entry, self.camera_backend_combo, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
         for e in entries:
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()
@@ -427,6 +441,7 @@ class CenteringApp:
                 return
         self.serial.update_config(self.config)
         self.detector.update_config(self.config)
+        self._reopen_camera()
         self.serial.close()
         self.serial.open_if_needed()
 
@@ -437,7 +452,7 @@ class CenteringApp:
         self.last_command = "Configuración guardada"
 
     def _apply_entries_silent(self) -> None:
-        entries = [self.com_entry, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
+        entries = [self.com_entry, self.camera_backend_combo, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
         for e in entries:
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()

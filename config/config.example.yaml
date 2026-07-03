@@ -11,6 +11,7 @@ app:
 
 camera:
   index: 0                        # camara USB: 0, 1, 2...
+  backend: dshow                   # medio de captura: dshow, msmf o default
   width: 1280
   height: 720
   fps: 30

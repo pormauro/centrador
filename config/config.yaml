@@ -7,6 +7,7 @@ app:
   debug_frames_dir: logs/debug_frames
 camera:
   index: 0
+  backend: dshow
   width: 1280
   height: 720
   fps: 30
