@@ -1,0 +1,73 @@
+# Centrador de corrugadora - configuracion principal
+# Copiar a config/config.yaml y ajustar desde la pantalla o editando este archivo.
+
+app:
+  title: "Centrador Corrugadora"
+  auto_start_enabled: false       # dejar false hasta probar. Luego poner true para arrancar corrigiendo.
+  fullscreen: false               # true para pantalla dedicada
+  update_interval_ms: 40          # 25 FPS aprox
+  save_debug_frames: false
+  debug_frames_dir: "logs/debug_frames"
+
+camera:
+  index: 0                        # camara USB: 0, 1, 2...
+  width: 1280
+  height: 720
+  fps: 30
+  flip_horizontal: false
+  flip_vertical: false
+  rotate_180: false
+  # Estos parametros no siempre son soportados por webcams comunes en Windows.
+  autofocus: null                 # null = no tocar, true/false = intentar setear
+  exposure: null                  # null = no tocar, valor numerico si la camara lo soporta
+  gain: null                      # null = no tocar
+
+roi:
+  # Region horizontal donde se buscan referencias y bordes. Se puede calibrar mirando el video.
+  # Si queres usar toda la imagen en X, deja x1=0 y x2=0.
+  x1: 0
+  x2: 0
+  y1: 260
+  y2: 460
+
+calibration:
+  # Estos valores se cargan tocando en la imagen desde la app.
+  left_reference_x: 150
+  ideal_left_edge_x: 420
+  ideal_right_edge_x: 860
+  right_reference_x: 1130
+  # Centro ideal. Si queda null, se calcula como promedio de ideal_left_edge_x/ideal_right_edge_x.
+  ideal_center_x: null
+  px_per_mm: 4.0                  # calibrar: pixeles por milimetro. Solo para mostrar mm.
+
+vision:
+  edge_search_window_px: 90        # cuanto busca alrededor de cada borde ideal
+  edge_min_confidence: 4.0         # mas alto = menos falsos, mas bajo = mas sensible
+  profile_smooth_window: 13
+  min_paper_width_px: 150
+  max_paper_width_px: 0            # 0 = sin limite maximo
+  no_paper_confirm_frames: 8       # frames consecutivos invalidos antes de declarar falta de papel
+  reference_check_enabled: false   # activar cuando las referencias sean negras/muy contrastadas
+  reference_search_window_px: 30
+  reference_dark_threshold: 70
+  reference_min_dark_ratio: 0.08
+
+control:
+  invert_correction: false         # si corrige al reves, cambiar a true
+  tolerance_px: 18                 # banda muerta. Ej: 18 px / 4 px_mm = 4.5 mm
+  medium_error_px: 60
+  pulse_small_ms: 100
+  pulse_large_ms: 250
+  cooldown_ms: 500
+  max_pulse_ms: 800
+  require_serial_ok_for_auto: true
+  stop_on_fault: true
+
+serial:
+  enabled: true
+  port: "COM3"
+  baudrate: 115200
+  timeout_s: 0.2
+  reconnect_every_s: 3.0
+  heartbeat_interval_s: 1.0
+  startup_command: "ENABLE 0"

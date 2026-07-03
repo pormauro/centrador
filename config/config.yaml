@@ -1,0 +1,59 @@
+app:
+  title: Centrador Corrugadora
+  auto_start_enabled: true
+  fullscreen: false
+  update_interval_ms: 40
+  save_debug_frames: false
+  debug_frames_dir: logs/debug_frames
+camera:
+  index: 0
+  width: 1280
+  height: 720
+  fps: 30
+  flip_horizontal: false
+  flip_vertical: false
+  rotate_180: false
+  autofocus: null
+  exposure: null
+  gain: null
+roi:
+  x1: 0
+  x2: 0
+  y1: 260
+  y2: 460
+calibration:
+  left_reference_x: 37
+  ideal_left_edge_x: 421
+  ideal_right_edge_x: 1092
+  right_reference_x: 1258
+  ideal_center_x: 756.5
+  px_per_mm: 4.0
+vision:
+  edge_search_window_px: 90
+  edge_min_confidence: 4.0
+  profile_smooth_window: 13
+  min_paper_width_px: 150
+  max_paper_width_px: 0
+  no_paper_confirm_frames: 8
+  reference_check_enabled: false
+  reference_search_window_px: 30
+  reference_dark_threshold: 70
+  reference_min_dark_ratio: 0.08
+control:
+  invert_correction: false
+  tolerance_px: 18
+  medium_error_px: 60
+  pulse_small_ms: 100
+  pulse_large_ms: 250
+  cooldown_ms: 500
+  max_pulse_ms: 800
+  require_serial_ok_for_auto: true
+  stop_on_fault: true
+serial:
+  enabled: true
+  port: COM3
+  baudrate: 115200
+  timeout_s: 0.2
+  reconnect_every_s: 3.0
+  heartbeat_interval_s: 1.0
+  startup_command: ENABLE 0
