@@ -39,6 +39,8 @@ class CenteringApp:
         self.display_w = 960
         self.display_h = 540
         self.last_command = ""
+        self.output_direction: Optional[str] = None
+        self.output_until = 0.0
         self.force_show_config = not self.auto_enabled
         self.camera_infos: list[CameraInfo] = []
 
@@ -106,23 +108,18 @@ class CenteringApp:
         self._hmi_button(action_grid, "STOP", self._stop_outputs, "red").grid(row=0, column=1, sticky="nsew", padx=4, pady=4)
         self._hmi_button(action_grid, "CONFIG", self._open_config_window, "blue").grid(row=1, column=0, sticky="nsew", padx=4, pady=4)
         self._hmi_button(action_grid, "SALIR", self._confirm_shutdown, "red").grid(row=1, column=1, sticky="nsew", padx=4, pady=4)
-        self._hmi_button(action_grid, "BUSCAR CAM", self._scan_cameras, "gray").grid(row=2, column=0, sticky="nsew", padx=4, pady=4)
-        self._hmi_button(action_grid, "USAR CAM", self._use_selected_camera, "green").grid(row=2, column=1, sticky="nsew", padx=4, pady=4)
 
-        camera_box = tk.Frame(self.panel, bg="#1f2937", padx=10, pady=10)
-        camera_box.pack(fill=tk.X, pady=8)
-        tk.Label(camera_box, text="CAMARA", font=self.hmi_small_font, fg="#e5e7eb", bg="#1f2937").pack(anchor="w")
+        direction_box = tk.Frame(self.panel, bg="#111827")
+        direction_box.pack(fill=tk.X, pady=8)
+        direction_box.columnconfigure(0, weight=1)
+        direction_box.columnconfigure(1, weight=1)
+        self.left_output_label = tk.Label(direction_box, text="IZQ\nOFF", font=self.hmi_value_font, fg="#94a3b8", bg="#1f2937", padx=12, pady=18)
+        self.left_output_label.grid(row=0, column=0, sticky="nsew", padx=4)
+        self.right_output_label = tk.Label(direction_box, text="DER\nOFF", font=self.hmi_value_font, fg="#94a3b8", bg="#1f2937", padx=12, pady=18)
+        self.right_output_label.grid(row=0, column=1, sticky="nsew", padx=4)
+
         self.active_camera_var = tk.StringVar(value="Activa: --")
         self.active_backend_var = tk.StringVar(value="Backend: --")
-        tk.Label(camera_box, textvariable=self.active_camera_var, font=("Segoe UI", 15), fg="#cbd5e1", bg="#1f2937").pack(anchor="w")
-        tk.Label(camera_box, textvariable=self.active_backend_var, font=("Segoe UI", 15), fg="#cbd5e1", bg="#1f2937").pack(anchor="w")
-        self.camera_backend_combo = ttk.Combobox(camera_box, values=["dshow", "msmf", "default"], state="readonly", font=("Segoe UI", 18), height=5)
-        current_backend = str(self.config.get("camera.backend", "dshow"))
-        self.camera_backend_combo.set(current_backend if current_backend in ("dshow", "msmf", "default") else "dshow")
-        self.camera_backend_combo.dotted = "camera.backend"  # type: ignore[attr-defined]
-        self.camera_backend_combo.pack(fill=tk.X, pady=6, ipady=8)
-        self.camera_select = ttk.Combobox(camera_box, state="readonly", font=("Segoe UI", 15), height=8)
-        self.camera_select.pack(fill=tk.X, pady=6, ipady=8)
         self._refresh_camera_status_labels()
 
         self.summary_var = tk.StringVar(value="Esperando imagen...")
@@ -217,6 +214,13 @@ class CenteringApp:
         frame.pack(fill=tk.X, pady=10)
         tk.Label(frame, textvariable=self.active_camera_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
         tk.Label(frame, textvariable=self.active_backend_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
+        self.camera_backend_combo = ttk.Combobox(frame, values=["dshow", "msmf", "default"], state="readonly", font=("Segoe UI", 20), height=5)
+        current_backend = str(self.config.get("camera.backend", "dshow"))
+        self.camera_backend_combo.set(current_backend if current_backend in ("dshow", "msmf", "default") else "dshow")
+        self.camera_backend_combo.dotted = "camera.backend"  # type: ignore[attr-defined]
+        self.camera_backend_combo.pack(fill=tk.X, pady=8, ipady=12)
+        self.camera_select = ttk.Combobox(frame, state="readonly", font=("Segoe UI", 20), height=8)
+        self.camera_select.pack(fill=tk.X, pady=8, ipady=12)
         row = tk.Frame(frame, bg="#0b1117")
         row.pack(fill=tk.X, pady=4)
         self._hmi_button(row, "BUSCAR CAMARAS", self._scan_cameras, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
@@ -323,7 +327,7 @@ class CenteringApp:
         messagebox.showinfo("Configuracion", "Configuracion guardada")
 
     def _adjustment_entries(self) -> list[ttk.Entry | ttk.Combobox]:
-        return [self.camera_backend_combo]
+        return [self.camera_backend_combo] if hasattr(self, "camera_backend_combo") else []
 
     def _update_vision_range_label(self) -> None:
         if not hasattr(self, "vision_range_var"):
@@ -451,6 +455,7 @@ class CenteringApp:
             self.config.set("app.auto_start_enabled", False)
             self.serial.set_enable(False)
         self.serial.stop()
+        self._clear_output_indicators()
         self.last_command = f"STOP: {reason}"
 
     def _refresh_camera_status_labels(self) -> None:
@@ -464,25 +469,31 @@ class CenteringApp:
         self.active_backend_var.set(f"Backend: {backend}")
 
     def _scan_cameras(self) -> None:
-        backend = self.camera_backend_combo.get().strip() or str(self.config.get("camera.backend", "dshow"))
+        backend = self.camera_backend_combo.get().strip() if hasattr(self, "camera_backend_combo") else str(self.config.get("camera.backend", "dshow"))
+        backend = backend or str(self.config.get("camera.backend", "dshow"))
         self._prepare_camera_change("Buscando cámaras")
         if self.capture is not None:
             self.capture.release()
             self.capture = None
-        self.camera_select.configure(values=[])
-        self.camera_select.set("Buscando...")
+        if hasattr(self, "camera_select"):
+            self.camera_select.configure(values=[])
+            self.camera_select.set("Buscando...")
         self.root.update_idletasks()
         self.camera_infos = scan_cameras(max_index=8, backend=backend)
         labels = [info.label() for info in self.camera_infos]
-        self.camera_select.configure(values=labels)
+        if hasattr(self, "camera_select"):
+            self.camera_select.configure(values=labels)
         current_index = int(self.config.get("camera.index", 0))
         selected = next((info.label() for info in self.camera_infos if info.index == current_index), labels[0] if labels else "")
-        self.camera_select.set(selected)
+        if hasattr(self, "camera_select"):
+            self.camera_select.set(selected)
         self._reopen_camera_unsafe()
         available_count = sum(1 for info in self.camera_infos if info.available)
         self.last_command = f"Cámaras encontradas: {available_count}"
 
     def _selected_camera_info(self) -> Optional[CameraInfo]:
+        if not hasattr(self, "camera_select"):
+            return None
         selected = self.camera_select.get().strip()
         for info in self.camera_infos:
             if info.label() == selected:
@@ -503,7 +514,8 @@ class CenteringApp:
         if not info.available:
             messagebox.showwarning("Cámara no disponible", f"La cámara {info.index} no está disponible. No se cambió la cámara activa.")
             return
-        backend = self.camera_backend_combo.get().strip() or str(self.config.get("camera.backend", "dshow"))
+        backend = self.camera_backend_combo.get().strip() if hasattr(self, "camera_backend_combo") else str(self.config.get("camera.backend", "dshow"))
+        backend = backend or str(self.config.get("camera.backend", "dshow"))
         self._prepare_camera_change("Cambiando cámara")
         self.config.set("camera.index", int(info.index))
         self.config.set("camera.backend", backend)
@@ -597,6 +609,7 @@ class CenteringApp:
 
         if self.serial.pulse(direction, ms):
             self.last_pulse_time = now
+            self._set_output_indicator(direction, ms / 1000.0)
             self.last_command = f"PULSO {direction} {ms} ms"
             self.logger.info("%s | error_px=%.1f error_mm=%s", self.last_command, error, result.error_mm)
         else:
@@ -665,6 +678,28 @@ class CenteringApp:
         opened = self.capture is not None and self.capture.isOpened()
         self.camera_badge.configure(text=f"CAM {self.config.get('camera.index', '--')}" if opened else "SIN CAM", bg="#334155" if opened else "#dc2626")
         self.auto_button.configure(text="AUTO: ON" if self.auto_enabled else "AUTO: OFF", bg="#16a34a" if self.auto_enabled else "#2563eb", activebackground="#22c55e" if self.auto_enabled else "#3b82f6")
+        self._update_output_indicators()
+
+    def _set_output_indicator(self, direction: str, duration_s: float) -> None:
+        self.output_direction = direction.upper()
+        self.output_until = time.monotonic() + max(0.2, duration_s)
+        self._update_output_indicators()
+
+    def _clear_output_indicators(self) -> None:
+        self.output_direction = None
+        self.output_until = 0.0
+        self._update_output_indicators()
+
+    def _update_output_indicators(self) -> None:
+        if not hasattr(self, "left_output_label") or not hasattr(self, "right_output_label"):
+            return
+        active = self.output_direction if time.monotonic() <= self.output_until else None
+        if active is None:
+            self.output_direction = None
+        left_on = active == "LEFT"
+        right_on = active == "RIGHT"
+        self.left_output_label.configure(text="IZQ\nON" if left_on else "IZQ\nOFF", bg="#16a34a" if left_on else "#1f2937", fg="#ffffff" if left_on else "#94a3b8")
+        self.right_output_label.configure(text="DER\nON" if right_on else "DER\nOFF", bg="#16a34a" if right_on else "#1f2937", fg="#ffffff" if right_on else "#94a3b8")
 
     def _update_info(self, result: Optional[DetectionResult]) -> None:
         serial_status = self.serial.status()
@@ -734,6 +769,7 @@ class CenteringApp:
 
     def _stop_outputs(self) -> None:
         self.last_command = "STOP manual"
+        self._clear_output_indicators()
         self.serial.stop()
 
     def _set_pending(self, key: str) -> None:
