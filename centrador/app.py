@@ -15,6 +15,7 @@ from .camera_discovery import CameraInfo, open_camera, scan_cameras
 from .config import ConfigStore
 from .detector import DetectionResult, PaperDetector
 from .serial_controller import SerialController
+from .windows_startup import disable_startup, enable_startup, restart_to_uefi, startup_status
 
 
 class CenteringApp:
@@ -86,6 +87,30 @@ class CenteringApp:
         ttk.Button(self.panel, text="STOP salidas", command=self._stop_outputs).pack(fill=tk.X, pady=4)
         ttk.Button(self.panel, text="Guardar configuración", command=self._save_config).pack(fill=tk.X, pady=4)
         ttk.Button(self.panel, text="Reabrir cámara", command=self._reopen_camera).pack(fill=tk.X, pady=4)
+
+        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
+        ttk.Label(self.panel, text="Inicio automático", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        self.windows_startup_status_var = tk.StringVar(value="Inicio con Windows: --")
+        ttk.Label(self.panel, textvariable=self.windows_startup_status_var).pack(anchor="w")
+        self.windows_startup_var = tk.BooleanVar(value=False)
+        ttk.Checkbutton(
+            self.panel,
+            text="Iniciar esta aplicación automáticamente con Windows",
+            variable=self.windows_startup_var,
+            command=self._toggle_windows_startup,
+        ).pack(anchor="w", pady=2)
+        ttk.Button(self.panel, text="Actualizar estado inicio", command=self._refresh_windows_startup_status).pack(fill=tk.X, pady=2)
+
+        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
+        ttk.Label(self.panel, text="Encendido automático al volver la corriente", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        ttk.Label(
+            self.panel,
+            text="Esto no depende de Windows: se configura en BIOS/UEFI. Buscá Restore on AC Power Loss / Power On After Power Fail y ponelo en Power On.",
+            wraplength=310,
+        ).pack(anchor="w", pady=2)
+        ttk.Button(self.panel, text="Abrir BIOS/UEFI", command=self._restart_to_uefi).pack(fill=tk.X, pady=2)
+        ttk.Button(self.panel, text="Ver instrucciones manuales", command=self._show_uefi_manual_instructions).pack(fill=tk.X, pady=2)
+        self._refresh_windows_startup_status()
 
         ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
         ttk.Label(self.panel, text="Cámara", font=("Segoe UI", 11, "bold")).pack(anchor="w")
@@ -191,6 +216,60 @@ class CenteringApp:
             self.vision_range_var.set(f"Rango búsqueda aprox: {window_px / px_per_mm:.1f} mm")
         except ValueError:
             self.vision_range_var.set("Rango búsqueda aprox: -- mm")
+
+    def _refresh_windows_startup_status(self) -> None:
+        if not hasattr(self, "windows_startup_status_var"):
+            return
+        try:
+            status = startup_status()
+            self.windows_startup_var.set(status.enabled)
+            label = "Activado" if status.enabled else "Desactivado"
+            detail = f" ({status.detail})" if status.detail else ""
+            self.windows_startup_status_var.set(f"Inicio con Windows: {label}{detail}")
+        except Exception as exc:
+            self.windows_startup_var.set(False)
+            self.windows_startup_status_var.set("Inicio con Windows: error")
+            self.logger.warning("No se pudo consultar inicio con Windows: %s", exc)
+
+    def _toggle_windows_startup(self) -> None:
+        desired = bool(self.windows_startup_var.get())
+        try:
+            if desired:
+                ok, error = enable_startup(self.config.path)
+            else:
+                ok, error = disable_startup()
+            if not ok:
+                messagebox.showerror("Inicio con Windows", error or "No se pudo cambiar el inicio con Windows.")
+        except Exception as exc:
+            messagebox.showerror("Inicio con Windows", f"No se pudo cambiar el inicio con Windows:\n{exc}")
+        self._refresh_windows_startup_status()
+
+    def _show_uefi_manual_instructions(self) -> None:
+        messagebox.showinfo(
+            "Encendido automático al volver la corriente",
+            "Esta opción no depende de Windows sino del BIOS/UEFI.\n\n"
+            "Reiniciá la PC y entrá al BIOS/UEFI presionando DEL, F2, F10, F12 o ESC según el fabricante.\n\n"
+            "Buscá una de estas opciones:\n"
+            "- Restore on AC Power Loss\n"
+            "- AC Power Recovery\n"
+            "- Power On After Power Fail\n"
+            "- After Power Loss\n"
+            "- State After Power Loss\n"
+            "- AC Back\n\n"
+            "Configurala en Power On.",
+        )
+
+    def _restart_to_uefi(self) -> None:
+        confirmed = messagebox.askyesno(
+            "Abrir BIOS/UEFI",
+            "La computadora se reiniciará y entrará a la configuración UEFI/BIOS. Guardá tu trabajo antes de continuar.\n\n¿Continuar?",
+        )
+        if not confirmed:
+            return
+        ok, error = restart_to_uefi()
+        if not ok:
+            messagebox.showerror("No se pudo abrir UEFI/BIOS", f"{error}\n\nVoy a mostrar las instrucciones manuales.")
+            self._show_uefi_manual_instructions()
 
     def _bind_keys(self) -> None:
         self.root.bind("<Escape>", lambda _e: self.shutdown())

@@ -181,7 +181,44 @@ vision:
 
 ## Arranque automático con Windows
 
-Cuando ya esté calibrado y probado:
+Cuando ya esté calibrado y probado, usá la sección `Inicio automático` dentro de la pantalla principal.
+
+Para iniciar la aplicación con Windows:
+
+1. Abrí la app.
+2. En `Inicio automático`, activá `Iniciar esta aplicación automáticamente con Windows`.
+3. Verificá que el estado diga `Inicio con Windows: Activado`.
+
+La app intenta usar primero el Programador de tareas de Windows con una tarea `At logon` del usuario actual. Si eso falla, crea un acceso directo en la carpeta Startup del usuario. No activa autologin, no guarda contraseñas y no necesita administrador si Windows permite crear la tarea por usuario.
+
+Para desactivarlo, destildá la misma opción. La app elimina la tarea programada y el acceso directo de Startup si existen, sin crear duplicados.
+
+### Encendido automático al volver la corriente
+
+Que la PC encienda sola cuando vuelve la alimentación eléctrica no depende de Windows. Se configura en el BIOS/UEFI de la computadora.
+
+En la app, sección `Encendido automático al volver la corriente`, podés tocar `Abrir BIOS/UEFI`. Windows pedirá permisos de administrador y ejecutará:
+
+```bat
+shutdown /r /fw /t 0
+```
+
+Si el equipo no soporta esa opción, reiniciá manualmente y entrá al BIOS/UEFI presionando `DEL`, `F2`, `F10`, `F12` o `ESC` según el fabricante.
+
+Buscá una opción con alguno de estos nombres:
+
+- `Restore on AC Power Loss`
+- `AC Power Recovery`
+- `Power On After Power Fail`
+- `After Power Loss`
+- `State After Power Loss`
+- `AC Back`
+
+Configurala en `Power On`.
+
+No intentes cambiar valores de BIOS desde Windows salvo que el fabricante tenga una herramienta oficial específica y documentada para ese modelo.
+
+Alternativa anterior por scripts:
 
 1. Editar `config\config.yaml`:
 

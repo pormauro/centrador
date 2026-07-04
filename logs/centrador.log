@@ -5407,3 +5407,793 @@
 2026-07-03 22:27:38,875 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-03 22:31:21,519 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-03 22:31:21,519 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:34:33,314 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=False
+2026-07-03 22:34:34,425 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:34:34,426 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:37,477 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:40,546 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:43,618 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:46,676 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:49,745 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:34:58,590 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=False
+2026-07-03 22:34:59,653 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:34:59,654 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:35:02,655 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:35:05,658 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:35:08,766 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:35:11,811 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:35:18,162 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 22:35:19,219 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:35:19,220 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:35:22,018 [INFO] centrador.serial: DRY-RUN serial: ENABLE 1
+2026-07-03 22:35:22,019 [INFO] centrador.app: AUTO=True
+2026-07-03 22:35:22,594 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:23,598 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:24,627 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:25,677 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:26,709 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:27,740 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:28,762 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:29,279 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:35:29,279 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=21.0 error_mm=5.25
+2026-07-03 22:35:29,790 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:29,834 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:35:29,834 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=41.5 error_mm=10.375
+2026-07-03 22:35:30,390 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:35:30,390 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=52.0 error_mm=13.0
+2026-07-03 22:35:30,825 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:30,948 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:35:30,948 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=21.5 error_mm=5.375
+2026-07-03 22:35:31,677 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:31,677 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-20.5 error_mm=-5.125
+2026-07-03 22:35:31,877 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:32,234 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:32,235 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-35.5 error_mm=-8.875
+2026-07-03 22:35:32,793 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:32,793 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-21.0 error_mm=-5.25
+2026-07-03 22:35:32,917 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:33,947 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:34,977 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:36,012 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:37,043 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:38,073 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:39,101 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:40,129 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:41,039 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:41,040 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-19.0 error_mm=-4.75
+2026-07-03 22:35:41,153 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:41,597 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:41,597 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-19.0 error_mm=-4.75
+2026-07-03 22:35:42,151 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:42,152 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-19.0 error_mm=-4.75
+2026-07-03 22:35:42,187 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:42,710 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:35:42,710 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-19.5 error_mm=-4.875
+2026-07-03 22:35:43,230 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:44,257 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:45,282 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:46,311 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:47,328 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:48,363 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:49,399 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:50,429 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:51,464 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:52,510 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:53,543 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:54,573 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:55,599 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:56,625 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:57,662 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:58,696 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:35:59,722 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:00,750 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:01,784 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:02,817 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:03,606 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:03,606 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:03,895 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:04,183 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:04,183 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:04,735 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:04,735 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:04,928 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:05,288 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:05,289 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:05,847 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:05,847 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:05,961 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:06,395 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:06,395 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:06,946 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:06,946 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:36:06,982 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:07,495 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:07,495 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.5 error_mm=-2.875
+2026-07-03 22:36:08,002 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:08,046 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:08,047 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-10.5 error_mm=-2.625
+2026-07-03 22:36:08,604 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:08,604 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-4.0 error_mm=-1.0
+2026-07-03 22:36:09,038 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:09,159 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:09,160 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=4.5 error_mm=1.125
+2026-07-03 22:36:09,712 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:09,713 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:36:10,057 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:10,259 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:10,259 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:36:10,816 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:10,816 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:36:11,091 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:11,374 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:11,375 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=14.5 error_mm=3.625
+2026-07-03 22:36:11,934 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:11,934 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=4.0 error_mm=1.0
+2026-07-03 22:36:12,134 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:13,164 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:14,191 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:15,223 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:16,138 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:16,138 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-4.0 error_mm=-1.0
+2026-07-03 22:36:16,260 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:16,710 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:16,710 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-6.0 error_mm=-1.5
+2026-07-03 22:36:17,289 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:17,290 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-6.0 error_mm=-1.5
+2026-07-03 22:36:17,339 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:18,055 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:18,055 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=4.0 error_mm=1.0
+2026-07-03 22:36:18,404 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:18,606 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:18,606 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:36:19,164 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:19,165 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-3.5 error_mm=-0.875
+2026-07-03 22:36:19,441 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:19,802 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:19,803 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.0 error_mm=-1.25
+2026-07-03 22:36:20,354 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:20,354 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.0 error_mm=-1.25
+2026-07-03 22:36:20,471 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:21,074 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:21,074 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-3.5 error_mm=-0.875
+2026-07-03 22:36:21,506 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:21,628 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:21,628 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-6.5 error_mm=-1.625
+2026-07-03 22:36:22,180 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:22,180 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.5 error_mm=-2.875
+2026-07-03 22:36:22,535 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:22,741 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:22,741 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=3.5 error_mm=0.875
+2026-07-03 22:36:23,296 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:23,297 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-13.0 error_mm=-3.25
+2026-07-03 22:36:23,590 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:23,965 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:23,965 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-6.5 error_mm=-1.625
+2026-07-03 22:36:24,524 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:24,525 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:24,639 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:25,082 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:25,083 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.5 error_mm=-1.375
+2026-07-03 22:36:25,640 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:25,641 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=5.5 error_mm=1.375
+2026-07-03 22:36:25,676 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:26,190 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:36:26,191 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:36:26,701 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:26,746 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:26,746 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-4.0 error_mm=-1.0
+2026-07-03 22:36:27,297 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:27,297 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.5 error_mm=-1.375
+2026-07-03 22:36:27,729 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:27,851 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:27,852 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-4.5 error_mm=-1.125
+2026-07-03 22:36:28,404 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:28,404 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.5 error_mm=-1.375
+2026-07-03 22:36:28,756 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:28,955 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:28,956 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:29,505 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:29,505 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:29,778 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:30,058 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:30,058 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:30,606 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:30,606 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:30,812 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:31,168 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:31,168 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:31,729 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:31,729 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:31,844 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:32,286 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:32,287 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:32,839 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:32,839 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:32,875 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:33,399 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:33,400 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:33,912 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:33,957 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:33,957 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:34,515 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:34,515 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:34,951 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:35,073 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:35,073 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:35,628 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:35,629 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:35,984 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:36,187 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:36,187 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:36,742 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:36,743 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:37,016 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:37,295 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:37,296 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:37,854 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:37,854 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:38,063 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:38,427 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:38,428 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:38,981 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:38,981 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:39,098 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:39,536 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:39,536 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:40,092 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:40,093 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:40,129 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:40,652 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:40,653 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:41,164 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:41,210 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:41,210 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:41,759 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:41,760 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:42,193 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:42,317 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:42,318 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:42,877 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:42,878 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:43,235 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:43,438 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:43,438 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:43,991 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:43,991 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:44,264 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:44,544 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:44,544 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:45,097 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:45,098 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:45,293 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:45,648 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:45,649 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:46,200 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:46,201 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:46,319 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:46,760 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:46,760 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:47,313 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:47,313 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:47,350 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:47,885 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:47,885 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:48,398 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:48,443 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:48,443 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:48,998 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:48,999 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:49,428 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:49,552 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:49,552 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:50,104 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:50,104 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:50,458 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:50,659 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:50,660 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:51,212 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:51,212 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:51,488 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:51,769 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:51,770 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:52,319 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:52,319 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:52,511 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:52,880 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:52,880 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:53,436 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:53,436 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:53,552 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:53,995 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:53,996 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.0 error_mm=-1.75
+2026-07-03 22:36:54,551 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:54,551 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:54,588 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:55,105 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:55,105 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:55,609 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:55,653 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:55,654 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:56,214 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:56,214 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:56,650 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:56,773 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:56,774 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:57,330 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:57,330 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:57,679 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:57,887 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:57,888 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:58,447 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:58,448 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:36:58,723 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:36:59,005 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:59,005 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:59,557 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:36:59,557 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:36:59,750 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:00,112 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:00,112 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:00,671 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:00,671 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:00,787 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:01,225 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:01,226 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:01,787 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:01,787 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:01,821 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:02,359 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:02,360 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:02,860 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:02,860 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:02,899 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:03,442 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:03,442 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:03,954 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:03,998 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:03,998 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:04,558 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:04,558 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:04,985 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:05,108 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:05,108 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:05,662 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:05,662 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:06,017 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:06,221 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:06,221 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:06,785 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:06,785 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:07,068 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:07,361 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:07,362 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:07,928 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:07,929 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:08,149 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:08,433 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:08,433 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:08,989 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:08,989 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:09,203 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:09,491 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:09,491 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:10,000 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:10,000 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:10,211 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:10,523 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:10,523 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:11,069 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:11,069 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:11,287 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:11,572 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:11,573 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:12,146 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:12,146 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:12,359 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:12,724 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:12,724 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:13,282 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:13,282 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:13,397 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:13,830 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:13,830 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-8.0 error_mm=-2.0
+2026-07-03 22:37:14,381 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:14,382 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.0 error_mm=-1.75
+2026-07-03 22:37:14,418 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:14,933 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:14,934 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-7.5 error_mm=-1.875
+2026-07-03 22:37:15,444 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:15,488 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:15,488 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-5.0 error_mm=-1.25
+2026-07-03 22:37:16,041 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:16,041 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=51.0 error_mm=12.75
+2026-07-03 22:37:16,471 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:16,594 [INFO] centrador.serial: DRY-RUN serial: PULSE L 250
+2026-07-03 22:37:16,594 [INFO] centrador.app: PULSO LEFT 250 ms | error_px=71.5 error_mm=17.875
+2026-07-03 22:37:16,997 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,079 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,158 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,236 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,317 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,396 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,475 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,510 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:17,554 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,633 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,711 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,790 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,870 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:17,949 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,029 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,110 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,190 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,271 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,350 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,431 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,511 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,549 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:18,593 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,676 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,755 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,835 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,915 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:18,994 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,073 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,151 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,232 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,309 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,387 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,467 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,547 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,584 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:19,628 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,709 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,788 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,867 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:19,946 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,026 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,108 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,189 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,269 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,349 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,430 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,509 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,588 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,623 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:20,667 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,747 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,825 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,906 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:20,986 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,065 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,145 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,224 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,304 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,385 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:21,470 [INFO] centrador.serial: DRY-RUN serial: PULSE L 250
+2026-07-03 22:37:21,470 [INFO] centrador.app: PULSO LEFT 250 ms | error_px=84.5 error_mm=21.125
+2026-07-03 22:37:21,664 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:22,023 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:22,023 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=37.5 error_mm=9.375
+2026-07-03 22:37:22,576 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:22,576 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=48.5 error_mm=12.125
+2026-07-03 22:37:22,691 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:23,127 [INFO] centrador.serial: DRY-RUN serial: PULSE L 250
+2026-07-03 22:37:23,128 [INFO] centrador.app: PULSO LEFT 250 ms | error_px=82.0 error_mm=20.5
+2026-07-03 22:37:23,364 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,443 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,521 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,601 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,679 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,714 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:23,759 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,840 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:23,920 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,001 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,082 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,159 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,240 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,320 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,399 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,477 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:24,555 [INFO] centrador.serial: DRY-RUN serial: PULSE L 250
+2026-07-03 22:37:24,556 [INFO] centrador.app: PULSO LEFT 250 ms | error_px=79.5 error_mm=19.875
+2026-07-03 22:37:24,749 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:25,104 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:25,105 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=27.0 error_mm=6.75
+2026-07-03 22:37:25,662 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:25,662 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=20.5 error_mm=5.125
+2026-07-03 22:37:25,776 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:26,229 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:26,229 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-6.5 error_mm=-1.625
+2026-07-03 22:37:26,468 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:26,705 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:26,784 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:26,784 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-55.5 error_mm=-13.875
+2026-07-03 22:37:26,822 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:27,337 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:27,337 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-54.0 error_mm=-13.5
+2026-07-03 22:37:27,848 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:27,894 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:27,894 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:28,447 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:28,448 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=34.0 error_mm=8.5
+2026-07-03 22:37:28,876 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:28,999 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:29,000 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-44.5 error_mm=-11.125
+2026-07-03 22:37:29,545 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:29,546 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:29,894 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:30,095 [INFO] centrador.serial: DRY-RUN serial: PULSE R 250
+2026-07-03 22:37:30,095 [INFO] centrador.app: PULSO RIGHT 250 ms | error_px=-60.5 error_mm=-15.125
+2026-07-03 22:37:30,604 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:30,605 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=19.5 error_mm=4.875
+2026-07-03 22:37:30,899 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:31,110 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:31,111 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-16.0 error_mm=-4.0
+2026-07-03 22:37:31,611 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:31,611 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-28.0 error_mm=-7.0
+2026-07-03 22:37:31,905 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:32,119 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:32,119 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=19.0 error_mm=4.75
+2026-07-03 22:37:32,688 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:32,689 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=15.5 error_mm=3.875
+2026-07-03 22:37:32,959 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:33,245 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:33,245 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=30.5 error_mm=7.625
+2026-07-03 22:37:33,797 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:33,876 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:33,954 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:33,990 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:34,034 [INFO] centrador.serial: DRY-RUN serial: PULSE L 250
+2026-07-03 22:37:34,035 [INFO] centrador.app: PULSO LEFT 250 ms | error_px=90.0 error_mm=22.5
+2026-07-03 22:37:34,193 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,274 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,355 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,433 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,512 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,592 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,671 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,763 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,844 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:34,928 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,010 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,046 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:35,090 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,168 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,249 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,331 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:35,332 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-10.5 error_mm=-2.625
+2026-07-03 22:37:35,411 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,491 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:35,891 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:35,891 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.0 error_mm=-2.75
+2026-07-03 22:37:36,083 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:36,445 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:36,445 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.5 error_mm=-2.875
+2026-07-03 22:37:36,996 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:37,076 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:37,076 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.5 error_mm=-2.875
+2026-07-03 22:37:37,111 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:37,155 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:37,630 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:37,709 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:37,710 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-11.0 error_mm=-2.75
+2026-07-03 22:37:38,027 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:38,145 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:38,189 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:38,270 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:38,270 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-13.5 error_mm=-3.375
+2026-07-03 22:37:38,429 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:38,668 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:38,830 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:38,830 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.5 error_mm=-3.125
+2026-07-03 22:37:39,183 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:39,394 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:39,395 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:37:39,475 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:39,805 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:39,887 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:39,972 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:39,973 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-13.0 error_mm=-3.25
+2026-07-03 22:37:40,134 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,266 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:40,393 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,478 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,564 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:40,564 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.0 error_mm=-3.0
+2026-07-03 22:37:40,651 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,735 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,820 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,910 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:40,995 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:41,079 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:41,162 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:37:41,249 [INFO] centrador.serial: DRY-RUN serial: PULSE R 250
+2026-07-03 22:37:41,249 [INFO] centrador.app: PULSO RIGHT 250 ms | error_px=-78.0 error_mm=-19.5
+2026-07-03 22:37:41,292 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:41,828 [INFO] centrador.serial: DRY-RUN serial: PULSE R 250
+2026-07-03 22:37:41,829 [INFO] centrador.app: PULSO RIGHT 250 ms | error_px=-70.5 error_mm=-17.625
+2026-07-03 22:37:42,338 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:42,383 [INFO] centrador.serial: DRY-RUN serial: PULSE R 250
+2026-07-03 22:37:42,383 [INFO] centrador.app: PULSO RIGHT 250 ms | error_px=-73.0 error_mm=-18.25
+2026-07-03 22:37:42,941 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:42,941 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-42.5 error_mm=-10.625
+2026-07-03 22:37:43,372 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:43,495 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:43,495 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-31.5 error_mm=-7.875
+2026-07-03 22:37:44,053 [INFO] centrador.serial: DRY-RUN serial: PULSE R 100
+2026-07-03 22:37:44,053 [INFO] centrador.app: PULSO RIGHT 100 ms | error_px=-12.5 error_mm=-3.125
+2026-07-03 22:37:44,403 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:44,603 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:44,604 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:45,157 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:45,157 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=8.0 error_mm=2.0
+2026-07-03 22:37:45,436 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:45,716 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:45,717 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:46,273 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:46,273 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:46,466 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:46,822 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:46,822 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:47,383 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:47,384 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:47,498 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:47,935 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:47,937 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:37:48,489 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:48,489 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:37:48,526 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:49,054 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:49,054 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:37:49,563 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:49,607 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:49,607 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:37:50,164 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:50,165 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=6.5 error_mm=1.625
+2026-07-03 22:37:50,600 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:50,723 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:50,724 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.0 error_mm=1.75
+2026-07-03 22:37:51,286 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:51,286 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=7.5 error_mm=1.875
+2026-07-03 22:37:51,638 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:51,839 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:51,840 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:52,395 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:52,396 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:52,668 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:52,952 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:52,952 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:53,513 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:53,513 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:53,716 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:54,079 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:54,079 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:54,644 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:54,644 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:54,760 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:55,213 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:55,213 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:55,783 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:55,784 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.5 error_mm=2.375
+2026-07-03 22:37:55,821 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:56,363 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:56,363 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:56,826 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:56,870 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:56,870 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:57,380 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:57,381 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=9.0 error_mm=2.25
+2026-07-03 22:37:57,847 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:57,892 [INFO] centrador.serial: DRY-RUN serial: PULSE L 100
+2026-07-03 22:37:57,893 [INFO] centrador.app: PULSO LEFT 100 ms | error_px=8.5 error_mm=2.125
+2026-07-03 22:37:58,875 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:37:59,908 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:00,934 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:01,960 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:02,997 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:04,023 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:05,037 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:06,062 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:07,098 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:08,136 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:09,157 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:10,177 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:11,197 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:12,212 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:13,237 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:14,266 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:15,281 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:16,334 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:17,380 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:18,404 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:19,440 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:20,475 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:21,512 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:22,563 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:23,576 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:24,646 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:25,669 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:26,700 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:27,723 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:28,755 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:29,771 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:30,804 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:31,822 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:32,842 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:33,866 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:34,886 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:35,916 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:36,935 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:37,957 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:39,000 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:40,005 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:41,049 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:42,079 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:43,109 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:44,154 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:45,183 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:46,223 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:47,246 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:48,271 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:49,304 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:50,391 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:51,411 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:52,475 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:53,510 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:54,534 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:55,545 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:56,563 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:57,613 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:58,635 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:38:59,666 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:00,690 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:01,716 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:02,739 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:03,762 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:04,792 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:05,821 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:06,884 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:07,954 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:09,013 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:10,050 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:11,079 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:12,117 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:13,128 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:14,148 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:15,175 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:16,199 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:17,224 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:18,250 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:19,286 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:20,294 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:21,325 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:22,339 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:23,354 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:24,399 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:25,443 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:26,457 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:27,472 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:28,495 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:29,512 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:30,532 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:31,560 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:32,597 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:33,634 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:34,660 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:35,740 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:36,819 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:37,845 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:38,875 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:39,894 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:40,973 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:42,029 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:43,113 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:44,146 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:45,210 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:46,291 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:47,359 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:48,393 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:49,477 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:39:50,501 [INFO] centrador.serial: DRY-RUN serial: HB
