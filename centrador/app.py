@@ -52,165 +52,289 @@ class CenteringApp:
 
     def _build_ui(self) -> None:
         self.root.title(str(self.config.get("app.title", "Centrador Corrugadora")))
+        self.root.configure(bg="#0b1117")
         if bool(self.config.get("app.fullscreen", False)):
             self.root.attributes("-fullscreen", True)
 
         self.root.protocol("WM_DELETE_WINDOW", self.shutdown)
 
-        self.main = ttk.Frame(self.root, padding=6)
+        self.hmi_font = ("Segoe UI", 20, "bold")
+        self.hmi_big_font = ("Segoe UI", 30, "bold")
+        self.hmi_value_font = ("Segoe UI", 24, "bold")
+        self.hmi_small_font = ("Segoe UI", 16)
+        self.config_value_vars: dict[str, tk.StringVar] = {}
+        self.config_widgets: dict[str, tk.Widget] = {}
+
+        self.main = tk.Frame(self.root, bg="#0b1117", padx=10, pady=10)
         self.main.pack(fill=tk.BOTH, expand=True)
 
-        self.left = ttk.Frame(self.main)
+        self.left = tk.Frame(self.main, bg="#0b1117")
         self.left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        self.canvas = tk.Canvas(self.left, bg="black", highlightthickness=0)
+        top_status = tk.Frame(self.left, bg="#0b1117")
+        top_status.pack(fill=tk.X, pady=(0, 10))
+        self.state_badge = tk.Label(top_status, text="INICIANDO", font=self.hmi_big_font, fg="#ffffff", bg="#64748b", padx=20, pady=12)
+        self.state_badge.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8))
+        self.mode_badge = tk.Label(top_status, text="AUTO OFF", font=self.hmi_value_font, fg="#ffffff", bg="#2563eb", padx=18, pady=12)
+        self.mode_badge.pack(side=tk.LEFT, padx=(0, 8))
+        self.camera_badge = tk.Label(top_status, text="CAM --", font=self.hmi_value_font, fg="#ffffff", bg="#334155", padx=18, pady=12)
+        self.camera_badge.pack(side=tk.LEFT)
+
+        self.canvas = tk.Canvas(self.left, bg="black", highlightthickness=3, highlightbackground="#233142")
         self.canvas.pack(fill=tk.BOTH, expand=True)
         self.canvas.bind("<Button-1>", self._on_canvas_click)
         self.canvas.bind("<Configure>", self._on_canvas_resize)
 
-        self.status_label = ttk.Label(self.left, text="Iniciando...", font=("Segoe UI", 12))
-        self.status_label.pack(fill=tk.X, pady=(5, 0))
+        self.status_label = tk.Label(self.left, text="Iniciando...", font=self.hmi_small_font, fg="#dbeafe", bg="#17212e", anchor="w", padx=14, pady=10)
+        self.status_label.pack(fill=tk.X, pady=(10, 0))
 
-        self.panel = ttk.Frame(self.main, width=330)
-        self.panel.pack(side=tk.RIGHT, fill=tk.Y, padx=(8, 0))
+        self.panel = tk.Frame(self.main, bg="#111827", width=340, padx=10, pady=10)
+        self.panel.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0))
+        self.panel.pack_propagate(False)
 
-        title = ttk.Label(self.panel, text="Centrador", font=("Segoe UI", 16, "bold"))
-        title.pack(anchor="w", pady=(0, 8))
+        title = tk.Label(self.panel, text="CENTRADOR", font=("Segoe UI", 28, "bold"), fg="#e5e7eb", bg="#111827")
+        title.pack(fill=tk.X, pady=(0, 10))
 
         self.auto_var = tk.BooleanVar(value=self.auto_enabled)
-        self.auto_check = ttk.Checkbutton(self.panel, text="AUTO habilitado", variable=self.auto_var, command=self._toggle_auto)
-        self.auto_check.pack(anchor="w", pady=3)
-
         self.serial_var = tk.BooleanVar(value=bool(self.config.get("serial.enabled", True)))
-        ttk.Checkbutton(self.panel, text="Usar Arduino/Serie", variable=self.serial_var, command=self._toggle_serial_enabled).pack(anchor="w", pady=3)
+        action_grid = tk.Frame(self.panel, bg="#111827")
+        action_grid.pack(fill=tk.X)
+        for col in range(2):
+            action_grid.columnconfigure(col, weight=1)
+        self.auto_button = self._hmi_button(action_grid, "AUTO: OFF", self._toggle_auto_button, "blue")
+        self.auto_button.grid(row=0, column=0, sticky="nsew", padx=4, pady=4)
+        self._hmi_button(action_grid, "STOP", self._stop_outputs, "red").grid(row=0, column=1, sticky="nsew", padx=4, pady=4)
+        self._hmi_button(action_grid, "CONFIG", self._open_config_window, "blue").grid(row=1, column=0, sticky="nsew", padx=4, pady=4)
+        self._hmi_button(action_grid, "SALIR", self._confirm_shutdown, "red").grid(row=1, column=1, sticky="nsew", padx=4, pady=4)
+        self._hmi_button(action_grid, "BUSCAR CAM", self._scan_cameras, "gray").grid(row=2, column=0, sticky="nsew", padx=4, pady=4)
+        self._hmi_button(action_grid, "USAR CAM", self._use_selected_camera, "green").grid(row=2, column=1, sticky="nsew", padx=4, pady=4)
 
-        ttk.Button(self.panel, text="STOP salidas", command=self._stop_outputs).pack(fill=tk.X, pady=4)
-        ttk.Button(self.panel, text="Guardar configuración", command=self._save_config).pack(fill=tk.X, pady=4)
-        ttk.Button(self.panel, text="Reabrir cámara", command=self._reopen_camera).pack(fill=tk.X, pady=4)
-
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Inicio automático", font=("Segoe UI", 11, "bold")).pack(anchor="w")
-        self.windows_startup_status_var = tk.StringVar(value="Inicio con Windows: --")
-        ttk.Label(self.panel, textvariable=self.windows_startup_status_var).pack(anchor="w")
-        self.windows_startup_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(
-            self.panel,
-            text="Iniciar esta aplicación automáticamente con Windows",
-            variable=self.windows_startup_var,
-            command=self._toggle_windows_startup,
-        ).pack(anchor="w", pady=2)
-        ttk.Button(self.panel, text="Actualizar estado inicio", command=self._refresh_windows_startup_status).pack(fill=tk.X, pady=2)
-
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Encendido automático al volver la corriente", font=("Segoe UI", 11, "bold")).pack(anchor="w")
-        ttk.Label(
-            self.panel,
-            text="Esto no depende de Windows: se configura en BIOS/UEFI. Buscá Restore on AC Power Loss / Power On After Power Fail y ponelo en Power On.",
-            wraplength=310,
-        ).pack(anchor="w", pady=2)
-        ttk.Button(self.panel, text="Abrir BIOS/UEFI", command=self._restart_to_uefi).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="Ver instrucciones manuales", command=self._show_uefi_manual_instructions).pack(fill=tk.X, pady=2)
-        self._refresh_windows_startup_status()
-
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Cámara", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        camera_box = tk.Frame(self.panel, bg="#1f2937", padx=10, pady=10)
+        camera_box.pack(fill=tk.X, pady=8)
+        tk.Label(camera_box, text="CAMARA", font=self.hmi_small_font, fg="#e5e7eb", bg="#1f2937").pack(anchor="w")
         self.active_camera_var = tk.StringVar(value="Activa: --")
         self.active_backend_var = tk.StringVar(value="Backend: --")
-        ttk.Label(self.panel, textvariable=self.active_camera_var).pack(anchor="w")
-        ttk.Label(self.panel, textvariable=self.active_backend_var).pack(anchor="w")
-        self.camera_backend_combo = self._labeled_combo("Backend", "camera.backend", ["dshow", "msmf", "default"])
-        self.camera_select = ttk.Combobox(self.panel, state="readonly", width=28)
-        self.camera_select.pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="Buscar cámaras", command=self._scan_cameras).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="Usar cámara seleccionada", command=self._use_selected_camera).pack(fill=tk.X, pady=2)
+        tk.Label(camera_box, textvariable=self.active_camera_var, font=("Segoe UI", 15), fg="#cbd5e1", bg="#1f2937").pack(anchor="w")
+        tk.Label(camera_box, textvariable=self.active_backend_var, font=("Segoe UI", 15), fg="#cbd5e1", bg="#1f2937").pack(anchor="w")
+        self.camera_backend_combo = ttk.Combobox(camera_box, values=["dshow", "msmf", "default"], state="readonly", font=("Segoe UI", 18), height=5)
+        current_backend = str(self.config.get("camera.backend", "dshow"))
+        self.camera_backend_combo.set(current_backend if current_backend in ("dshow", "msmf", "default") else "dshow")
+        self.camera_backend_combo.dotted = "camera.backend"  # type: ignore[attr-defined]
+        self.camera_backend_combo.pack(fill=tk.X, pady=6, ipady=8)
+        self.camera_select = ttk.Combobox(camera_box, state="readonly", font=("Segoe UI", 15), height=8)
+        self.camera_select.pack(fill=tk.X, pady=6, ipady=8)
         self._refresh_camera_status_labels()
 
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Calibración por click", font=("Segoe UI", 11, "bold")).pack(anchor="w")
-        ttk.Label(self.panel, text="Tocá el botón y luego clic en la imagen.").pack(anchor="w")
-        ttk.Button(self.panel, text="1) Click referencia izquierda", command=lambda: self._set_pending("left_reference_x")).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="2) Click borde izquierdo papel", command=lambda: self._set_pending("ideal_left_edge_x")).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="3) Click borde derecho papel", command=lambda: self._set_pending("ideal_right_edge_x")).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="4) Click referencia derecha", command=lambda: self._set_pending("right_reference_x")).pack(fill=tk.X, pady=2)
-        ttk.Button(self.panel, text="Usar centro actual como ideal", command=self._use_current_center_as_ideal).pack(fill=tk.X, pady=4)
-        ttk.Button(self.panel, text="Recalcular centro ideal por bordes", command=self._recalc_ideal_center).pack(fill=tk.X, pady=2)
+        self.summary_var = tk.StringVar(value="Esperando imagen...")
+        tk.Label(self.panel, textvariable=self.summary_var, font=("Segoe UI", 15), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=10, pady=10, wraplength=300).pack(fill=tk.BOTH, expand=True, pady=8)
 
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Ajustes rápidos", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        self.windows_startup_status_var = tk.StringVar(value="Inicio con Windows: --")
+        self.windows_startup_var = tk.BooleanVar(value=False)
+        self._refresh_windows_startup_status()
 
-        self.com_entry = self._labeled_entry("Puerto COM", "serial.port")
-        self.tolerance_entry = self._labeled_entry("Tolerancia px", "control.tolerance_px")
-        self.medium_entry = self._labeled_entry("Error medio px", "control.medium_error_px")
-        self.pxmm_entry = self._labeled_entry("px por mm", "calibration.px_per_mm")
-        self.roi_y1_entry = self._labeled_entry("ROI y1", "roi.y1")
-        self.roi_y2_entry = self._labeled_entry("ROI y2", "roi.y2")
+    def _config_sections(self) -> list[tuple[str, list[tuple[str, str, str]]]]:
+        return [
+            ("Operacion", [("Puerto COM", "serial.port", "text"), ("Usar Arduino/Serie", "serial.enabled", "bool"), ("AUTO al abrir", "app.auto_start_enabled", "bool"), ("Pantalla completa", "app.fullscreen", "bool")]),
+            ("Camara", [("Indice camara", "camera.index", "number"), ("Ancho captura", "camera.width", "number"), ("Alto captura", "camera.height", "number"), ("FPS", "camera.fps", "number")]),
+            ("Control", [("Tolerancia px", "control.tolerance_px", "number"), ("Error medio px", "control.medium_error_px", "number"), ("Pulso chico ms", "control.pulse_small_ms", "number"), ("Pulso grande ms", "control.pulse_large_ms", "number"), ("Espera entre pulsos ms", "control.cooldown_ms", "number"), ("Invertir correccion", "control.invert_correction", "bool"), ("Parar ante falla", "control.stop_on_fault", "bool")]),
+            ("Vision", [("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Rango busqueda borde px", "vision.edge_search_window_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
+            ("Calibracion", [("Referencia izquierda", "calibration.left_reference_x", "number"), ("Borde izquierdo ideal", "calibration.ideal_left_edge_x", "number"), ("Borde derecho ideal", "calibration.ideal_right_edge_x", "number"), ("Referencia derecha", "calibration.right_reference_x", "number"), ("Centro ideal", "calibration.ideal_center_x", "number"), ("px por mm", "calibration.px_per_mm", "number")]),
+            ("Inicio y energia", [("Inicio Windows", "windows.startup", "action"), ("Abrir BIOS/UEFI", "system.uefi", "action")]),
+        ]
 
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        ttk.Label(self.panel, text="Ajustes visión", font=("Segoe UI", 11, "bold")).pack(anchor="w")
-        self.edge_window_entry = self._labeled_entry("Rango búsqueda borde px", "vision.edge_search_window_px")
-        self.edge_confidence_entry = self._labeled_entry("Confianza mínima borde", "vision.edge_min_confidence")
-        self.min_width_entry = self._labeled_entry("Ancho mínimo papel px", "vision.min_paper_width_px")
-        self.max_width_entry = self._labeled_entry("Ancho máximo papel px", "vision.max_paper_width_px")
-        self.no_paper_frames_entry = self._labeled_entry("Frames falta papel", "vision.no_paper_confirm_frames")
-        self.vision_range_var = tk.StringVar(value="Rango búsqueda aprox: -- mm")
-        ttk.Label(self.panel, textvariable=self.vision_range_var).pack(anchor="w", pady=(2, 0))
-        self.edge_window_entry.bind("<KeyRelease>", lambda _e: self._update_vision_range_label())
-        self.pxmm_entry.bind("<KeyRelease>", lambda _e: self._update_vision_range_label())
-        self._update_vision_range_label()
+    def _hmi_button(self, parent, text: str, command, color: str = "gray") -> tk.Button:
+        colors = {
+            "green": ("#16a34a", "#ffffff", "#22c55e"),
+            "red": ("#dc2626", "#ffffff", "#ef4444"),
+            "blue": ("#2563eb", "#ffffff", "#3b82f6"),
+            "gray": ("#374151", "#ffffff", "#4b5563"),
+            "yellow": ("#d97706", "#111827", "#f59e0b"),
+        }
+        bg, fg, active = colors.get(color, colors["gray"])
+        return tk.Button(parent, text=text, command=command, font=self.hmi_font, bg=bg, fg=fg, activebackground=active, activeforeground=fg, relief=tk.FLAT, bd=0, padx=14, pady=18, cursor="hand2")
 
-        ttk.Button(self.panel, text="Aplicar ajustes", command=self._apply_entries).pack(fill=tk.X, pady=4)
+    def _toggle_auto_button(self) -> None:
+        self.auto_var.set(not self.auto_enabled)
+        self._toggle_auto()
 
-        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
-        self.info_text = tk.Text(self.panel, height=14, width=42, wrap="word")
-        self.info_text.pack(fill=tk.BOTH, expand=False)
-        self.info_text.insert("1.0", "Esperando imagen...\n")
-        self.info_text.configure(state="disabled")
+    def _confirm_shutdown(self) -> None:
+        if messagebox.askyesno("Cerrar", "¿Cerrar la aplicacion y apagar salidas?"):
+            self.shutdown()
 
-        ttk.Label(self.panel, text="Teclas: A auto | S guardar | F fullscreen | ESC salir", font=("Segoe UI", 9)).pack(anchor="w", pady=(8, 0))
+    def _open_config_window(self) -> None:
+        if hasattr(self, "config_window") and self.config_window.winfo_exists():
+            self.config_window.lift()
+            return
+        win = tk.Toplevel(self.root)
+        self.config_window = win
+        win.title("Configuracion")
+        win.configure(bg="#0b1117")
+        win.transient(self.root)
+        try:
+            win.attributes("-fullscreen", bool(self.root.attributes("-fullscreen")))
+        except tk.TclError:
+            pass
 
-    def _labeled_entry(self, label: str, dotted: str) -> ttk.Entry:
-        frame = ttk.Frame(self.panel)
-        frame.pack(fill=tk.X, pady=2)
-        ttk.Label(frame, text=label, width=16).pack(side=tk.LEFT)
-        entry = ttk.Entry(frame, width=16)
-        entry.insert(0, str(self.config.get(dotted, "")))
-        entry.pack(side=tk.RIGHT, fill=tk.X, expand=True)
-        entry.dotted = dotted  # type: ignore[attr-defined]
-        return entry
+        header = tk.Frame(win, bg="#111827", padx=12, pady=10)
+        header.pack(fill=tk.X)
+        tk.Label(header, text="CONFIGURACION", font=("Segoe UI", 30, "bold"), fg="#e5e7eb", bg="#111827").pack(side=tk.LEFT)
+        self._hmi_button(header, "VOLVER", win.destroy, "gray").pack(side=tk.RIGHT, padx=(8, 0))
+        self._hmi_button(header, "GUARDAR CONFIGURACION", self._save_config_from_window, "green").pack(side=tk.RIGHT)
 
-    def _labeled_combo(self, label: str, dotted: str, values: list[str]) -> ttk.Combobox:
-        frame = ttk.Frame(self.panel)
-        frame.pack(fill=tk.X, pady=2)
-        ttk.Label(frame, text=label, width=16).pack(side=tk.LEFT)
-        combo = ttk.Combobox(frame, values=values, state="readonly", width=16)
-        current = str(self.config.get(dotted, values[0]))
-        combo.set(current if current in values else values[0])
-        combo.pack(side=tk.RIGHT, fill=tk.X, expand=True)
-        combo.dotted = dotted  # type: ignore[attr-defined]
-        return combo
+        action_bar = tk.Frame(win, bg="#0b1117", padx=12, pady=8)
+        action_bar.pack(fill=tk.X)
+        for label, key in [("1) REF IZQ", "left_reference_x"), ("2) BORDE IZQ", "ideal_left_edge_x"), ("3) BORDE DER", "ideal_right_edge_x"), ("4) REF DER", "right_reference_x")]:
+            self._hmi_button(action_bar, label, lambda k=key: self._set_pending_and_close(k), "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+
+        body = tk.Frame(win, bg="#0b1117")
+        body.pack(fill=tk.BOTH, expand=True)
+        canvas = tk.Canvas(body, bg="#0b1117", highlightthickness=0)
+        scrollbar = tk.Scrollbar(body, orient=tk.VERTICAL, command=canvas.yview, width=34)
+        content = tk.Frame(canvas, bg="#0b1117", padx=12, pady=8)
+        content.bind("<Configure>", lambda _e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=content, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.config_value_vars.clear()
+        self.config_widgets.clear()
+        self._build_camera_config_card(content)
+        for section, items in self._config_sections():
+            box = tk.LabelFrame(content, text=section.upper(), font=("Segoe UI", 22, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
+            box.pack(fill=tk.X, pady=10)
+            for label, dotted, kind in items:
+                self._build_config_row(box, label, dotted, kind)
+
+        bottom = tk.Frame(win, bg="#111827", padx=12, pady=10)
+        bottom.pack(fill=tk.X)
+        self._hmi_button(bottom, "USAR CENTRO ACTUAL", self._use_current_center_as_ideal, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._hmi_button(bottom, "RECALCULAR CENTRO", lambda: self._recalc_ideal_center(save=False), "gray").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._hmi_button(bottom, "CERRAR", win.destroy, "red").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+
+    def _build_camera_config_card(self, parent) -> None:
+        frame = tk.LabelFrame(parent, text="SELECCION DE CAMARA", font=("Segoe UI", 22, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
+        frame.pack(fill=tk.X, pady=10)
+        tk.Label(frame, textvariable=self.active_camera_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
+        tk.Label(frame, textvariable=self.active_backend_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
+        row = tk.Frame(frame, bg="#0b1117")
+        row.pack(fill=tk.X, pady=4)
+        self._hmi_button(row, "BUSCAR CAMARAS", self._scan_cameras, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._hmi_button(row, "USAR SELECCIONADA", self._use_selected_camera, "green").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+
+    def _build_config_row(self, parent, label: str, dotted: str, kind: str) -> None:
+        if kind == "action":
+            row = tk.Frame(parent, bg="#1f2937", padx=12, pady=10)
+            row.pack(fill=tk.X, pady=6)
+            command = self._toggle_windows_startup_action if dotted == "windows.startup" else self._restart_to_uefi
+            text = self.windows_startup_status_var.get() if dotted == "windows.startup" else label
+            self._hmi_button(row, text, command, "blue").pack(fill=tk.X)
+            return
+        row = tk.Frame(parent, bg="#1f2937", padx=12, pady=10)
+        row.pack(fill=tk.X, pady=6)
+        tk.Label(row, text=label, font=self.hmi_small_font, fg="#e5e7eb", bg="#1f2937", anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True)
+        value = self.config.get(dotted, "")
+        var = tk.StringVar(value="" if value is None else str(value))
+        self.config_value_vars[dotted] = var
+        if kind == "bool":
+            btn = self._hmi_button(row, "SI" if bool(value) else "NO", lambda d=dotted: self._toggle_config_bool(d), "green" if bool(value) else "gray")
+            btn.pack(side=tk.RIGHT, padx=(8, 0))
+            self.config_widgets[dotted] = btn
+        elif kind == "text":
+            entry = tk.Entry(row, textvariable=var, font=("Segoe UI", 20), bg="#f8fafc", fg="#111827", relief=tk.FLAT)
+            entry.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=10, padx=(8, 0))
+            self.config_widgets[dotted] = entry
+        else:
+            tk.Label(row, textvariable=var, font=self.hmi_value_font, fg="#f8fafc", bg="#1f2937", width=10, anchor="e").pack(side=tk.RIGHT, padx=(8, 0))
+            self._hmi_button(row, "EDITAR", lambda d=dotted, l=label: self._open_numeric_keypad(d, l), "blue").pack(side=tk.RIGHT, padx=(8, 0))
+
+    def _toggle_config_bool(self, dotted: str) -> None:
+        var = self.config_value_vars[dotted]
+        current = var.get().strip().lower() in ("1", "true", "si", "sí", "yes", "on")
+        new_value = not current
+        var.set("true" if new_value else "false")
+        btn = self.config_widgets.get(dotted)
+        if isinstance(btn, tk.Button):
+            btn.configure(text="SI" if new_value else "NO", bg="#16a34a" if new_value else "#374151", activebackground="#22c55e" if new_value else "#4b5563")
+
+    def _toggle_windows_startup_action(self) -> None:
+        self.windows_startup_var.set(not self.windows_startup_var.get())
+        self._toggle_windows_startup()
+
+    def _set_pending_and_close(self, key: str) -> None:
+        self._set_pending(key)
+        if hasattr(self, "config_window") and self.config_window.winfo_exists():
+            self.config_window.destroy()
+
+    def _open_numeric_keypad(self, dotted: str, label: str) -> None:
+        var = self.config_value_vars[dotted]
+        pad = tk.Toplevel(self.root)
+        pad.title(label)
+        pad.configure(bg="#0b1117")
+        pad.transient(self.root)
+        pad.grab_set()
+        pad.geometry("560x680")
+        display = tk.StringVar(value=var.get())
+        tk.Label(pad, text=label, font=("Segoe UI", 26, "bold"), fg="#e5e7eb", bg="#0b1117", pady=12).pack(fill=tk.X)
+        tk.Label(pad, textvariable=display, font=("Segoe UI", 42, "bold"), fg="#f8fafc", bg="#17212e", padx=12, pady=18).pack(fill=tk.X, padx=14, pady=(0, 12))
+        grid = tk.Frame(pad, bg="#0b1117", padx=12, pady=8)
+        grid.pack(fill=tk.BOTH, expand=True)
+
+        def press(value: str) -> None:
+            cur = display.get()
+            if value == "BORRAR":
+                display.set(cur[:-1])
+            elif value == "LIMPIAR":
+                display.set("")
+            elif value == "-":
+                display.set(cur[1:] if cur.startswith("-") else "-" + cur)
+            elif value == ".":
+                if "." not in cur:
+                    display.set((cur or "0") + ".")
+            else:
+                display.set(cur + value)
+
+        for r, row_keys in enumerate([("7", "8", "9"), ("4", "5", "6"), ("1", "2", "3"), ("-", "0", "."), ("BORRAR", "LIMPIAR", "CANCELAR")]):
+            grid.rowconfigure(r, weight=1, minsize=86)
+            for c, key in enumerate(row_keys):
+                grid.columnconfigure(c, weight=1, minsize=150)
+                color = "red" if key == "CANCELAR" else ("gray" if key in ("BORRAR", "LIMPIAR") else "blue")
+                cmd = pad.destroy if key == "CANCELAR" else lambda k=key: press(k)
+                self._hmi_button(grid, key, cmd, color).grid(row=r, column=c, sticky="nsew", padx=6, pady=6)
+
+        def accept() -> None:
+            raw = display.get().strip()
+            try:
+                if raw in ("", "-", ".", "-."):
+                    raise ValueError
+                float(raw)
+            except ValueError:
+                messagebox.showwarning("Valor invalido", "Ingresá un numero valido.")
+                return
+            var.set(raw)
+            pad.destroy()
+
+        self._hmi_button(pad, "ACEPTAR", accept, "green").pack(fill=tk.X, padx=18, pady=(4, 16))
+
+    def _save_config_from_window(self) -> None:
+        self._apply_entries()
+        self.config.save()
+        self.last_command = "Configuracion guardada"
+        messagebox.showinfo("Configuracion", "Configuracion guardada")
 
     def _adjustment_entries(self) -> list[ttk.Entry | ttk.Combobox]:
-        return [
-            self.com_entry,
-            self.camera_backend_combo,
-            self.tolerance_entry,
-            self.medium_entry,
-            self.pxmm_entry,
-            self.roi_y1_entry,
-            self.roi_y2_entry,
-            self.edge_window_entry,
-            self.edge_confidence_entry,
-            self.min_width_entry,
-            self.max_width_entry,
-            self.no_paper_frames_entry,
-        ]
+        return [self.camera_backend_combo]
 
     def _update_vision_range_label(self) -> None:
         if not hasattr(self, "vision_range_var"):
             return
         try:
-            window_px = float(self.edge_window_entry.get().strip())
-            px_per_mm = float(self.pxmm_entry.get().strip())
+            if hasattr(self, "edge_window_entry") and hasattr(self, "pxmm_entry"):
+                window_px = float(self.edge_window_entry.get().strip())
+                px_per_mm = float(self.pxmm_entry.get().strip())
+            else:
+                window_px = float(self.config.get("vision.edge_search_window_px"))
+                px_per_mm = float(self.config.get("calibration.px_per_mm"))
             if px_per_mm <= 0:
                 raise ValueError
             self.vision_range_var.set(f"Rango búsqueda aprox: {window_px / px_per_mm:.1f} mm")
@@ -404,6 +528,8 @@ class CenteringApp:
         frame = self._read_frame()
         if frame is None:
             self.status_label.configure(text="SIN CÁMARA / SIN IMAGEN")
+            self.state_badge.configure(text="SIN CAMARA", bg="#dc2626")
+            self.camera_badge.configure(text="SIN CAM", bg="#dc2626")
             self._update_info(None)
             return
         self.last_frame_bgr = frame
@@ -531,6 +657,14 @@ class CenteringApp:
         serial_txt = "DRY" if serial_status.dry_run else ("OK" if serial_status.connected else f"NO {serial_status.port}")
         err = "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"
         self.status_label.configure(text=f"AUTO={'ON' if self.auto_enabled else 'OFF'} | SERIE={serial_txt} | VISION={'OK' if result.valid else result.fault} | ERROR={err} | {self.last_command}")
+        if result.valid:
+            self.state_badge.configure(text="VISION OK", bg="#16a34a")
+        else:
+            self.state_badge.configure(text=f"FALLA {result.fault or 'VISION'}", bg="#dc2626")
+        self.mode_badge.configure(text="AUTO ON" if self.auto_enabled else "AUTO OFF", bg="#16a34a" if self.auto_enabled else "#2563eb")
+        opened = self.capture is not None and self.capture.isOpened()
+        self.camera_badge.configure(text=f"CAM {self.config.get('camera.index', '--')}" if opened else "SIN CAM", bg="#334155" if opened else "#dc2626")
+        self.auto_button.configure(text="AUTO: ON" if self.auto_enabled else "AUTO: OFF", bg="#16a34a" if self.auto_enabled else "#2563eb", activebackground="#22c55e" if self.auto_enabled else "#3b82f6")
 
     def _update_info(self, result: Optional[DetectionResult]) -> None:
         serial_status = self.serial.status()
@@ -557,10 +691,13 @@ class CenteringApp:
                 f"Ref OK izq/der: {result.left_ref_ok} / {result.right_ref_ok}",
                 f"Ultimo comando: {self.last_command}",
             ]
-        self.info_text.configure(state="normal")
-        self.info_text.delete("1.0", tk.END)
-        self.info_text.insert("1.0", "\n".join(lines))
-        self.info_text.configure(state="disabled")
+        if hasattr(self, "summary_var"):
+            self.summary_var.set("\n".join(lines[:16]))
+        if hasattr(self, "info_text"):
+            self.info_text.configure(state="normal")
+            self.info_text.delete("1.0", tk.END)
+            self.info_text.insert("1.0", "\n".join(lines))
+            self.info_text.configure(state="disabled")
 
     def _toggle_auto_from_key(self) -> None:
         self.auto_var.set(not self.auto_var.get())
@@ -580,6 +717,8 @@ class CenteringApp:
         self.serial.set_enable(self.auto_enabled)
         if not self.auto_enabled:
             self.serial.stop()
+        if hasattr(self, "auto_button"):
+            self.auto_button.configure(text="AUTO: ON" if self.auto_enabled else "AUTO: OFF", bg="#16a34a" if self.auto_enabled else "#2563eb", activebackground="#22c55e" if self.auto_enabled else "#3b82f6")
         self.logger.info("AUTO=%s", self.auto_enabled)
 
     def _set_auto_var(self) -> None:
@@ -629,6 +768,10 @@ class CenteringApp:
 
     def _apply_entries(self) -> None:
         old_backend = str(self.config.get("camera.backend", "dshow"))
+        if hasattr(self, "config_value_vars"):
+            for dotted, var in self.config_value_vars.items():
+                if not self._apply_config_value(dotted, var.get(), warn=True):
+                    return
         for e in self._adjustment_entries():
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()
@@ -656,6 +799,24 @@ class CenteringApp:
         self.serial.close()
         self.serial.open_if_needed()
 
+    def _apply_config_value(self, dotted: str, raw: str, warn: bool) -> bool:
+        old = self.config.get(dotted)
+        try:
+            if isinstance(old, bool):
+                value = raw.strip().lower() in ("1", "true", "si", "sí", "yes", "on")
+            elif isinstance(old, int):
+                value = int(float(raw))
+            elif isinstance(old, float) or old is None:
+                value = None if raw.strip() == "" else float(raw)
+            else:
+                value = raw.strip()
+            self.config.set(dotted, value)
+            return True
+        except ValueError:
+            if warn:
+                messagebox.showwarning("Valor invalido", f"No pude aplicar {dotted}={raw}")
+            return False
+
     def _save_config(self) -> None:
         self._apply_entries_silent()
         self.config.save()
@@ -663,6 +824,9 @@ class CenteringApp:
         self.last_command = "Configuración guardada"
 
     def _apply_entries_silent(self) -> None:
+        if hasattr(self, "config_value_vars"):
+            for dotted, var in self.config_value_vars.items():
+                self._apply_config_value(dotted, var.get(), warn=False)
         for e in self._adjustment_entries():
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()
