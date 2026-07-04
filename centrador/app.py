@@ -55,6 +55,7 @@ class CenteringApp:
     def _build_ui(self) -> None:
         self.root.title(str(self.config.get("app.title", "Centrador Corrugadora")))
         self.root.configure(bg="#0b1117")
+        self.root.option_add("*TCombobox*Listbox.font", ("Segoe UI", 24))
         if bool(self.config.get("app.fullscreen", False)):
             self.root.attributes("-fullscreen", True)
 
@@ -88,7 +89,6 @@ class CenteringApp:
         self.canvas.bind("<Configure>", self._on_canvas_resize)
 
         self.status_label = tk.Label(self.left, text="Iniciando...", font=self.hmi_small_font, fg="#dbeafe", bg="#17212e", anchor="w", padx=14, pady=10)
-        self.status_label.pack(fill=tk.X, pady=(10, 0))
 
         self.panel = tk.Frame(self.main, bg="#111827", width=340, padx=10, pady=10)
         self.panel.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0))
@@ -123,7 +123,7 @@ class CenteringApp:
         self._refresh_camera_status_labels()
 
         self.summary_var = tk.StringVar(value="Esperando imagen...")
-        tk.Label(self.panel, textvariable=self.summary_var, font=("Segoe UI", 15), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=10, pady=10, wraplength=300).pack(fill=tk.BOTH, expand=True, pady=8)
+        tk.Label(self.panel, textvariable=self.summary_var, font=("Segoe UI", 20), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=14, pady=14, wraplength=300).pack(fill=tk.BOTH, expand=True, pady=8)
 
         self.windows_startup_status_var = tk.StringVar(value="Inicio con Windows: --")
         self.windows_startup_var = tk.BooleanVar(value=False)
@@ -214,13 +214,13 @@ class CenteringApp:
         frame.pack(fill=tk.X, pady=10)
         tk.Label(frame, textvariable=self.active_camera_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
         tk.Label(frame, textvariable=self.active_backend_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117").pack(anchor="w", pady=2)
-        self.camera_backend_combo = ttk.Combobox(frame, values=["dshow", "msmf", "default"], state="readonly", font=("Segoe UI", 20), height=5)
+        self.camera_backend_combo = ttk.Combobox(frame, values=["dshow", "msmf", "default"], state="readonly", font=("Segoe UI", 28), height=5)
         current_backend = str(self.config.get("camera.backend", "dshow"))
         self.camera_backend_combo.set(current_backend if current_backend in ("dshow", "msmf", "default") else "dshow")
         self.camera_backend_combo.dotted = "camera.backend"  # type: ignore[attr-defined]
-        self.camera_backend_combo.pack(fill=tk.X, pady=8, ipady=12)
-        self.camera_select = ttk.Combobox(frame, state="readonly", font=("Segoe UI", 20), height=8)
-        self.camera_select.pack(fill=tk.X, pady=8, ipady=12)
+        self.camera_backend_combo.pack(fill=tk.X, pady=8, ipady=18)
+        self.camera_select = ttk.Combobox(frame, state="readonly", font=("Segoe UI", 28), height=8)
+        self.camera_select.pack(fill=tk.X, pady=8, ipady=18)
         row = tk.Frame(frame, bg="#0b1117")
         row.pack(fill=tk.X, pady=4)
         self._hmi_button(row, "BUSCAR CAMARAS", self._scan_cameras, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
@@ -234,9 +234,9 @@ class CenteringApp:
             text = self.windows_startup_status_var.get() if dotted == "windows.startup" else label
             self._hmi_button(row, text, command, "blue").pack(fill=tk.X)
             return
-        row = tk.Frame(parent, bg="#1f2937", padx=12, pady=10)
-        row.pack(fill=tk.X, pady=6)
-        tk.Label(row, text=label, font=self.hmi_small_font, fg="#e5e7eb", bg="#1f2937", anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True)
+        row = tk.Frame(parent, bg="#1f2937", padx=16, pady=18)
+        row.pack(fill=tk.X, pady=8)
+        tk.Label(row, text=label, font=("Segoe UI", 24), fg="#e5e7eb", bg="#1f2937", anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True)
         value = self.config.get(dotted, "")
         var = tk.StringVar(value="" if value is None else str(value))
         self.config_value_vars[dotted] = var
@@ -244,13 +244,29 @@ class CenteringApp:
             btn = self._hmi_button(row, "SI" if bool(value) else "NO", lambda d=dotted: self._toggle_config_bool(d), "green" if bool(value) else "gray")
             btn.pack(side=tk.RIGHT, padx=(8, 0))
             self.config_widgets[dotted] = btn
+        elif dotted == "serial.port":
+            combo = ttk.Combobox(row, textvariable=var, values=self._serial_port_values(), state="readonly", font=("Segoe UI", 28), height=8)
+            combo.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
+            self.config_widgets[dotted] = combo
         elif kind == "text":
-            entry = tk.Entry(row, textvariable=var, font=("Segoe UI", 20), bg="#f8fafc", fg="#111827", relief=tk.FLAT)
-            entry.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=10, padx=(8, 0))
+            entry = tk.Entry(row, textvariable=var, font=("Segoe UI", 28), bg="#f8fafc", fg="#111827", relief=tk.FLAT)
+            entry.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
             self.config_widgets[dotted] = entry
         else:
             tk.Label(row, textvariable=var, font=self.hmi_value_font, fg="#f8fafc", bg="#1f2937", width=10, anchor="e").pack(side=tk.RIGHT, padx=(8, 0))
             self._hmi_button(row, "EDITAR", lambda d=dotted, l=label: self._open_numeric_keypad(d, l), "blue").pack(side=tk.RIGHT, padx=(8, 0))
+
+    def _serial_port_values(self) -> list[str]:
+        current = str(self.config.get("serial.port", "COM3"))
+        ports = [current]
+        try:
+            from serial.tools import list_ports
+
+            ports += [port.device for port in list_ports.comports()]
+        except Exception:
+            ports += [f"COM{i}" for i in range(1, 11)]
+        seen = set()
+        return [port for port in ports if port and not (port in seen or seen.add(port))]
 
     def _toggle_config_bool(self, dotted: str) -> None:
         var = self.config_value_vars[dotted]
@@ -731,36 +747,37 @@ class CenteringApp:
 
     def _update_info(self, result: Optional[DetectionResult]) -> None:
         serial_status = self.serial.status()
-        lines = [
-            f"Puerto serie: {serial_status.port}",
-            f"Serie conectada: {serial_status.connected}",
-            f"Dry-run: {serial_status.dry_run}",
-            f"Ultimo error serie: {serial_status.last_error or '-'}",
-            "",
-        ]
+        lines = self._summary_lines([
+            ("Puerto serie", serial_status.port),
+            ("Serie", "DRY" if serial_status.dry_run else ("OK" if serial_status.connected else "DESCONECTADA")),
+            ("Error serie", serial_status.last_error or "-"),
+        ])
         if result is not None:
-            lines += [
-                f"Vision valida: {result.valid}",
-                f"Falla: {result.fault or '-'}",
-                f"Borde izq: {result.left_edge_x}",
-                f"Borde der: {result.right_edge_x}",
-                f"Centro papel: {None if result.paper_center_x is None else round(result.paper_center_x, 1)}",
-                f"Centro ideal: {round(result.ideal_center_x, 1)}",
-                f"Error px: {None if result.error_px is None else round(result.error_px, 2)}",
-                f"Error mm: {None if result.error_mm is None else round(result.error_mm, 2)}",
-                f"Ancho px: {result.paper_width_px}",
-                f"Conf izq/der: {result.left_confidence:.2f} / {result.right_confidence:.2f}",
-                f"No papel frames: {result.no_paper_counter}",
-                f"Ref OK izq/der: {result.left_ref_ok} / {result.right_ref_ok}",
-                f"Ultimo comando: {self.last_command}",
-            ]
+            lines += self._summary_lines([
+                ("Vision", "OK" if result.valid else (result.fault or "FALLA")),
+                ("Borde izq", result.left_edge_x),
+                ("Borde der", result.right_edge_x),
+                ("Centro papel", None if result.paper_center_x is None else round(result.paper_center_x, 1)),
+                ("Centro ideal", round(result.ideal_center_x, 1)),
+                ("Error", "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"),
+                ("Ancho", result.paper_width_px),
+                ("Ultimo comando", self.last_command or "-"),
+            ])
         if hasattr(self, "summary_var"):
-            self.summary_var.set("\n".join(lines[:16]))
+            self.summary_var.set("\n".join(lines[:24]))
         if hasattr(self, "info_text"):
             self.info_text.configure(state="normal")
             self.info_text.delete("1.0", tk.END)
             self.info_text.insert("1.0", "\n".join(lines))
             self.info_text.configure(state="disabled")
+
+    def _summary_lines(self, items: list[tuple[str, object]]) -> list[str]:
+        lines: list[str] = []
+        for label, value in items:
+            lines.append(label.upper())
+            lines.append(str(value))
+            lines.append("")
+        return lines
 
     def _toggle_auto_from_key(self) -> None:
         self.auto_var.set(not self.auto_var.get())
