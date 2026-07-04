@@ -61,6 +61,10 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "require_serial_ok_for_auto": True,
         "stop_on_fault": True,
     },
+    "display": {
+        "line_palette": "industrial",
+        "line_width_px": 4,
+    },
     "serial": {
         "enabled": True,
         "port": "COM3",

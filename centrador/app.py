@@ -135,6 +135,7 @@ class CenteringApp:
             ("Camara", [("Indice camara", "camera.index", "number"), ("Ancho captura", "camera.width", "number"), ("Alto captura", "camera.height", "number"), ("FPS", "camera.fps", "number")]),
             ("Control", [("Tolerancia px", "control.tolerance_px", "number"), ("Error medio px", "control.medium_error_px", "number"), ("Pulso chico ms", "control.pulse_small_ms", "number"), ("Pulso grande ms", "control.pulse_large_ms", "number"), ("Espera entre pulsos ms", "control.cooldown_ms", "number"), ("Invertir correccion", "control.invert_correction", "bool"), ("Parar ante falla", "control.stop_on_fault", "bool")]),
             ("Vision", [("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Rango busqueda borde px", "vision.edge_search_window_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
+            ("Visualizacion", [("Paleta de lineas", "display.line_palette", "choice"), ("Ancho lineas px", "display.line_width_px", "number")]),
             ("Calibracion", [("Referencia izquierda", "calibration.left_reference_x", "number"), ("Borde izquierdo ideal", "calibration.ideal_left_edge_x", "number"), ("Borde derecho ideal", "calibration.ideal_right_edge_x", "number"), ("Referencia derecha", "calibration.right_reference_x", "number"), ("Centro ideal", "calibration.ideal_center_x", "number"), ("px por mm", "calibration.px_per_mm", "number")]),
             ("Inicio y energia", [("Inicio Windows", "windows.startup", "action"), ("Abrir BIOS/UEFI", "system.uefi", "action")]),
         ]
@@ -149,6 +150,14 @@ class CenteringApp:
         }
         bg, fg, active = colors.get(color, colors["gray"])
         return tk.Button(parent, text=text, command=command, font=self.hmi_font, bg=bg, fg=fg, activebackground=active, activeforeground=fg, relief=tk.FLAT, bd=0, padx=14, pady=18, cursor="hand2")
+
+    def _keypad_button(self, parent, text: str, command, color: str = "blue") -> tk.Button:
+        button = self._hmi_button(parent, text, command, color)
+        if text in ("BORRAR", "LIMPIAR", "CANCELAR", "ACEPTAR"):
+            button.configure(font=("Segoe UI", 25, "bold"))
+        else:
+            button.configure(font=("Segoe UI", 44, "bold"))
+        return button
 
     def _toggle_auto_button(self) -> None:
         self.auto_var.set(not self.auto_enabled)
@@ -248,6 +257,10 @@ class CenteringApp:
             combo = ttk.Combobox(row, textvariable=var, values=self._serial_port_values(), state="readonly", font=("Segoe UI", 28), height=8)
             combo.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
             self.config_widgets[dotted] = combo
+        elif dotted == "display.line_palette":
+            combo = ttk.Combobox(row, textvariable=var, values=self._line_palette_values(), state="readonly", font=("Segoe UI", 28), height=6)
+            combo.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
+            self.config_widgets[dotted] = combo
         elif kind == "text":
             entry = tk.Entry(row, textvariable=var, font=("Segoe UI", 28), bg="#f8fafc", fg="#111827", relief=tk.FLAT)
             entry.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
@@ -269,6 +282,9 @@ class CenteringApp:
             ports += [f"COM{i}" for i in range(1, 11)]
         seen = set()
         return [port for port in ports if port and not (port in seen or seen.add(port))]
+
+    def _line_palette_values(self) -> list[str]:
+        return ["industrial", "alto_contraste", "calida"]
 
     def _toggle_config_bool(self, dotted: str) -> None:
         var = self.config_value_vars[dotted]
@@ -306,9 +322,11 @@ class CenteringApp:
         pad.protocol("WM_DELETE_WINDOW", pad.destroy)
         display = tk.StringVar(value=var.get())
         first_key = True
-        tk.Label(pad, text=label, font=("Segoe UI", 24, "bold"), fg="#e5e7eb", bg="#0b1117", pady=8).pack(fill=tk.X)
-        tk.Label(pad, textvariable=display, font=("Segoe UI", 38, "bold"), fg="#f8fafc", bg="#17212e", padx=12, pady=10).pack(fill=tk.X, padx=14, pady=(0, 8))
-        grid = tk.Frame(pad, bg="#0b1117", padx=12, pady=8)
+        header = tk.Frame(pad, bg="#0b1117", padx=14, pady=8)
+        header.pack(fill=tk.X)
+        tk.Label(header, text=label, font=("Segoe UI", 28, "bold"), fg="#e5e7eb", bg="#0b1117", anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True)
+        tk.Label(header, textvariable=display, font=("Segoe UI", 54, "bold"), fg="#f8fafc", bg="#17212e", padx=24, pady=6, width=8).pack(side=tk.RIGHT)
+        grid = tk.Frame(pad, bg="#0b1117", padx=14, pady=10)
         grid.pack(fill=tk.BOTH, expand=True)
 
         def press(value: str) -> None:
@@ -340,7 +358,7 @@ class CenteringApp:
             ("-", "0", ".", "ACEPTAR"),
         ]
         for r, row_keys in enumerate(keys):
-            grid.rowconfigure(r, weight=1, minsize=80)
+            grid.rowconfigure(r, weight=1, minsize=86)
             for c, key in enumerate(row_keys):
                 grid.columnconfigure(c, weight=1, minsize=120)
                 color = "green" if key == "ACEPTAR" else ("red" if key == "CANCELAR" else ("gray" if key in ("BORRAR", "LIMPIAR") else "blue"))
@@ -350,7 +368,7 @@ class CenteringApp:
                     cmd = lambda: accept()
                 else:
                     cmd = lambda k=key: press(k)
-                self._hmi_button(grid, key, cmd, color).grid(row=r, column=c, sticky="nsew", padx=6, pady=6)
+                self._keypad_button(grid, key, cmd, color).grid(row=r, column=c, sticky="nsew", padx=6, pady=6)
 
         def accept() -> None:
             raw = display.get().strip()
@@ -667,26 +685,28 @@ class CenteringApp:
     def _draw_overlay(self, frame: np.ndarray, result: DetectionResult) -> np.ndarray:
         h, w = frame.shape[:2]
         x1, x2, y1, y2 = result.roi
-        cv2.rectangle(frame, (x1, y1), (x2 - 1, y2 - 1), (255, 255, 0), 2)
-        cv2.line(frame, (x1, y1), (x2 - 1, y1), (0, 220, 255), 6, cv2.LINE_AA)
-        cv2.line(frame, (x1, y2 - 1), (x2 - 1, y2 - 1), (0, 220, 255), 6, cv2.LINE_AA)
-        cv2.putText(frame, "AREA LECTURA", (max(5, x1 + 8), max(24, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 220, 255), 2, cv2.LINE_AA)
+        colors = self._overlay_colors()
+        line_w = max(1, min(12, int(self.config.get("display.line_width_px", 4))))
+        cv2.rectangle(frame, (x1, y1), (x2 - 1, y2 - 1), colors["roi"], max(1, line_w - 1))
+        cv2.line(frame, (x1, y1), (x2 - 1, y1), colors["roi"], line_w + 2, cv2.LINE_AA)
+        cv2.line(frame, (x1, y2 - 1), (x2 - 1, y2 - 1), colors["roi"], line_w + 2, cv2.LINE_AA)
+        cv2.putText(frame, "AREA LECTURA", (max(5, x1 + 8), max(24, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.65, colors["roi"], 2, cv2.LINE_AA)
 
-        def vline(x: Optional[float], color, label: str, thickness: int = 2):
+        def vline(x: Optional[float], color, label: str, thickness: int):
             if x is None:
                 return
             xi = int(round(x))
             cv2.line(frame, (xi, 0), (xi, h - 1), color, thickness)
             cv2.putText(frame, label, (max(5, xi + 5), 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2, cv2.LINE_AA)
 
-        vline(self.config.get("calibration.left_reference_x"), (0, 255, 255), "REF IZQ", 2)
-        vline(self.config.get("calibration.right_reference_x"), (0, 255, 255), "REF DER", 2)
-        vline(self.config.get("calibration.ideal_left_edge_x"), (180, 180, 180), "BORDE IZQ IDEAL", 1)
-        vline(self.config.get("calibration.ideal_right_edge_x"), (180, 180, 180), "BORDE DER IDEAL", 1)
-        vline(result.ideal_center_x, (255, 0, 255), "CENTRO IDEAL", 2)
-        vline(result.left_edge_x, (0, 255, 0) if result.valid else (0, 0, 255), "BORDE IZQ", 3)
-        vline(result.right_edge_x, (0, 255, 0) if result.valid else (0, 0, 255), "BORDE DER", 3)
-        vline(result.paper_center_x, (255, 0, 0), "CENTRO PAPEL", 2)
+        vline(self.config.get("calibration.left_reference_x"), colors["reference"], "REF IZQ", line_w)
+        vline(self.config.get("calibration.right_reference_x"), colors["reference"], "REF DER", line_w)
+        vline(self.config.get("calibration.ideal_left_edge_x"), colors["ideal_edge"], "BORDE IZQ IDEAL", max(1, line_w - 2))
+        vline(self.config.get("calibration.ideal_right_edge_x"), colors["ideal_edge"], "BORDE DER IDEAL", max(1, line_w - 2))
+        vline(result.ideal_center_x, colors["ideal_center"], "CENTRO IDEAL", line_w)
+        vline(result.left_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE IZQ", line_w + 1)
+        vline(result.right_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE DER", line_w + 1)
+        vline(result.paper_center_x, colors["paper_center"], "CENTRO PAPEL", line_w)
 
         auto_text = "AUTO ON" if self.auto_enabled else "AUTO OFF"
         valid_text = "VISION OK" if result.valid else f"FAULT {result.fault}"
@@ -696,8 +716,41 @@ class CenteringApp:
         cv2.putText(frame, f"Error: {err} | Cmd: {self.last_command}", (15, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
 
         if self.pending_click:
-            cv2.putText(frame, f"CLICK para setear: {self.pending_click}", (15, 58), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 180, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"CLICK para setear: {self.pending_click}", (15, 58), cv2.FONT_HERSHEY_SIMPLEX, 0.8, colors["roi"], 2, cv2.LINE_AA)
         return frame
+
+    def _overlay_colors(self) -> dict[str, tuple[int, int, int]]:
+        palette = str(self.config.get("display.line_palette", "industrial"))
+        palettes = {
+            "industrial": {
+                "roi": (0, 180, 255),
+                "reference": (255, 220, 0),
+                "ideal_edge": (190, 190, 190),
+                "ideal_center": (255, 0, 255),
+                "detected_edge": (80, 255, 80),
+                "paper_center": (255, 140, 0),
+                "fault": (0, 0, 255),
+            },
+            "alto_contraste": {
+                "roi": (0, 255, 255),
+                "reference": (255, 255, 255),
+                "ideal_edge": (0, 165, 255),
+                "ideal_center": (255, 0, 255),
+                "detected_edge": (0, 255, 0),
+                "paper_center": (255, 255, 0),
+                "fault": (0, 0, 255),
+            },
+            "calida": {
+                "roi": (0, 140, 255),
+                "reference": (0, 215, 255),
+                "ideal_edge": (160, 160, 220),
+                "ideal_center": (255, 120, 255),
+                "detected_edge": (90, 255, 120),
+                "paper_center": (255, 200, 80),
+                "fault": (0, 0, 255),
+            },
+        }
+        return palettes.get(palette, palettes["industrial"])
 
     def _show_frame(self, frame_bgr: np.ndarray) -> None:
         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
