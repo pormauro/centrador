@@ -272,15 +272,23 @@ class CenteringApp:
 
     def _open_numeric_keypad(self, dotted: str, label: str) -> None:
         var = self.config_value_vars[dotted]
-        pad = tk.Toplevel(self.root)
+        parent = self.config_window if hasattr(self, "config_window") and self.config_window.winfo_exists() else self.root
+        pad = tk.Toplevel(parent)
         pad.title(label)
         pad.configure(bg="#0b1117")
-        pad.transient(self.root)
+        pad.transient(parent)
         pad.grab_set()
-        pad.geometry("560x680")
+        try:
+            fullscreen = bool(parent.attributes("-fullscreen"))
+            pad.attributes("-fullscreen", fullscreen)
+            if not fullscreen:
+                pad.geometry("800x480")
+        except tk.TclError:
+            pad.geometry("800x480")
+        pad.protocol("WM_DELETE_WINDOW", pad.destroy)
         display = tk.StringVar(value=var.get())
-        tk.Label(pad, text=label, font=("Segoe UI", 26, "bold"), fg="#e5e7eb", bg="#0b1117", pady=12).pack(fill=tk.X)
-        tk.Label(pad, textvariable=display, font=("Segoe UI", 42, "bold"), fg="#f8fafc", bg="#17212e", padx=12, pady=18).pack(fill=tk.X, padx=14, pady=(0, 12))
+        tk.Label(pad, text=label, font=("Segoe UI", 24, "bold"), fg="#e5e7eb", bg="#0b1117", pady=8).pack(fill=tk.X)
+        tk.Label(pad, textvariable=display, font=("Segoe UI", 38, "bold"), fg="#f8fafc", bg="#17212e", padx=12, pady=10).pack(fill=tk.X, padx=14, pady=(0, 8))
         grid = tk.Frame(pad, bg="#0b1117", padx=12, pady=8)
         grid.pack(fill=tk.BOTH, expand=True)
 
@@ -298,12 +306,23 @@ class CenteringApp:
             else:
                 display.set(cur + value)
 
-        for r, row_keys in enumerate([("7", "8", "9"), ("4", "5", "6"), ("1", "2", "3"), ("-", "0", "."), ("BORRAR", "LIMPIAR", "CANCELAR")]):
-            grid.rowconfigure(r, weight=1, minsize=86)
+        keys = [
+            ("7", "8", "9", "BORRAR"),
+            ("4", "5", "6", "LIMPIAR"),
+            ("1", "2", "3", "CANCELAR"),
+            ("-", "0", ".", "ACEPTAR"),
+        ]
+        for r, row_keys in enumerate(keys):
+            grid.rowconfigure(r, weight=1, minsize=80)
             for c, key in enumerate(row_keys):
-                grid.columnconfigure(c, weight=1, minsize=150)
-                color = "red" if key == "CANCELAR" else ("gray" if key in ("BORRAR", "LIMPIAR") else "blue")
-                cmd = pad.destroy if key == "CANCELAR" else lambda k=key: press(k)
+                grid.columnconfigure(c, weight=1, minsize=120)
+                color = "green" if key == "ACEPTAR" else ("red" if key == "CANCELAR" else ("gray" if key in ("BORRAR", "LIMPIAR") else "blue"))
+                if key == "CANCELAR":
+                    cmd = pad.destroy
+                elif key == "ACEPTAR":
+                    cmd = lambda: accept()
+                else:
+                    cmd = lambda k=key: press(k)
                 self._hmi_button(grid, key, cmd, color).grid(row=r, column=c, sticky="nsew", padx=6, pady=6)
 
         def accept() -> None:
@@ -317,8 +336,8 @@ class CenteringApp:
                 return
             var.set(raw)
             pad.destroy()
-
-        self._hmi_button(pad, "ACEPTAR", accept, "green").pack(fill=tk.X, padx=18, pady=(4, 16))
+        pad.lift()
+        pad.focus_force()
 
     def _save_config_from_window(self) -> None:
         self._apply_entries()

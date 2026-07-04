@@ -6,7 +6,7 @@ app:
   save_debug_frames: false
   debug_frames_dir: logs/debug_frames
 camera:
-  index: 1
+  index: 0
   backend: dshow
   width: 1280
   height: 720
