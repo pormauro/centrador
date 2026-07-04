@@ -123,7 +123,7 @@ class CenteringApp:
         self._refresh_camera_status_labels()
 
         self.summary_var = tk.StringVar(value="Esperando imagen...")
-        tk.Label(self.panel, textvariable=self.summary_var, font=("Segoe UI", 20), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=14, pady=14, wraplength=300).pack(fill=tk.BOTH, expand=True, pady=8)
+        tk.Label(self.panel, textvariable=self.summary_var, font=("Segoe UI", 17), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=14, pady=12, wraplength=300).pack(fill=tk.BOTH, expand=True, pady=8)
 
         self.windows_startup_status_var = tk.StringVar(value="Inicio con Windows: --")
         self.windows_startup_var = tk.BooleanVar(value=False)
@@ -253,8 +253,10 @@ class CenteringApp:
             entry.pack(side=tk.RIGHT, fill=tk.X, expand=False, ipady=18, padx=(8, 0))
             self.config_widgets[dotted] = entry
         else:
-            tk.Label(row, textvariable=var, font=self.hmi_value_font, fg="#f8fafc", bg="#1f2937", width=10, anchor="e").pack(side=tk.RIGHT, padx=(8, 0))
-            self._hmi_button(row, "EDITAR", lambda d=dotted, l=label: self._open_numeric_keypad(d, l), "blue").pack(side=tk.RIGHT, padx=(8, 0))
+            value_button = self._hmi_button(row, var.get() or "--", lambda d=dotted, l=label: self._open_numeric_keypad(d, l), "blue")
+            value_button.configure(font=("Segoe UI", 26, "bold"), width=10)
+            value_button.pack(side=tk.RIGHT, padx=(8, 0))
+            self.config_widgets[dotted] = value_button
 
     def _serial_port_values(self) -> list[str]:
         current = str(self.config.get("serial.port", "COM3"))
@@ -360,6 +362,9 @@ class CenteringApp:
                 messagebox.showwarning("Valor invalido", "Ingresá un numero valido.")
                 return
             var.set(raw)
+            widget = self.config_widgets.get(dotted)
+            if isinstance(widget, tk.Button):
+                widget.configure(text=raw)
             pad.destroy()
         pad.lift()
         pad.focus_force()
@@ -774,9 +779,7 @@ class CenteringApp:
     def _summary_lines(self, items: list[tuple[str, object]]) -> list[str]:
         lines: list[str] = []
         for label, value in items:
-            lines.append(label.upper())
-            lines.append(str(value))
-            lines.append("")
+            lines.append(f"{label.upper()}: {value}")
         return lines
 
     def _toggle_auto_from_key(self) -> None:

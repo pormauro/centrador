@@ -6963,3 +6963,8 @@
 2026-07-03 23:59:27,747 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-03 23:59:38,462 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-03 23:59:38,462 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-04 00:01:16,971 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-04 00:01:18,009 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-04 00:01:18,010 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-04 00:02:10,968 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-04 00:02:10,968 [INFO] centrador.serial: DRY-RUN serial: STOP
