@@ -119,6 +119,20 @@ class CenteringApp:
         self.pxmm_entry = self._labeled_entry("px por mm", "calibration.px_per_mm")
         self.roi_y1_entry = self._labeled_entry("ROI y1", "roi.y1")
         self.roi_y2_entry = self._labeled_entry("ROI y2", "roi.y2")
+
+        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
+        ttk.Label(self.panel, text="Ajustes visión", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        self.edge_window_entry = self._labeled_entry("Rango búsqueda borde px", "vision.edge_search_window_px")
+        self.edge_confidence_entry = self._labeled_entry("Confianza mínima borde", "vision.edge_min_confidence")
+        self.min_width_entry = self._labeled_entry("Ancho mínimo papel px", "vision.min_paper_width_px")
+        self.max_width_entry = self._labeled_entry("Ancho máximo papel px", "vision.max_paper_width_px")
+        self.no_paper_frames_entry = self._labeled_entry("Frames falta papel", "vision.no_paper_confirm_frames")
+        self.vision_range_var = tk.StringVar(value="Rango búsqueda aprox: -- mm")
+        ttk.Label(self.panel, textvariable=self.vision_range_var).pack(anchor="w", pady=(2, 0))
+        self.edge_window_entry.bind("<KeyRelease>", lambda _e: self._update_vision_range_label())
+        self.pxmm_entry.bind("<KeyRelease>", lambda _e: self._update_vision_range_label())
+        self._update_vision_range_label()
+
         ttk.Button(self.panel, text="Aplicar ajustes", command=self._apply_entries).pack(fill=tk.X, pady=4)
 
         ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
@@ -149,6 +163,34 @@ class CenteringApp:
         combo.pack(side=tk.RIGHT, fill=tk.X, expand=True)
         combo.dotted = dotted  # type: ignore[attr-defined]
         return combo
+
+    def _adjustment_entries(self) -> list[ttk.Entry | ttk.Combobox]:
+        return [
+            self.com_entry,
+            self.camera_backend_combo,
+            self.tolerance_entry,
+            self.medium_entry,
+            self.pxmm_entry,
+            self.roi_y1_entry,
+            self.roi_y2_entry,
+            self.edge_window_entry,
+            self.edge_confidence_entry,
+            self.min_width_entry,
+            self.max_width_entry,
+            self.no_paper_frames_entry,
+        ]
+
+    def _update_vision_range_label(self) -> None:
+        if not hasattr(self, "vision_range_var"):
+            return
+        try:
+            window_px = float(self.edge_window_entry.get().strip())
+            px_per_mm = float(self.pxmm_entry.get().strip())
+            if px_per_mm <= 0:
+                raise ValueError
+            self.vision_range_var.set(f"Rango búsqueda aprox: {window_px / px_per_mm:.1f} mm")
+        except ValueError:
+            self.vision_range_var.set("Rango búsqueda aprox: -- mm")
 
     def _bind_keys(self) -> None:
         self.root.bind("<Escape>", lambda _e: self.shutdown())
@@ -359,6 +401,9 @@ class CenteringApp:
         h, w = frame.shape[:2]
         x1, x2, y1, y2 = result.roi
         cv2.rectangle(frame, (x1, y1), (x2 - 1, y2 - 1), (255, 255, 0), 2)
+        cv2.line(frame, (x1, y1), (x2 - 1, y1), (0, 220, 255), 6, cv2.LINE_AA)
+        cv2.line(frame, (x1, y2 - 1), (x2 - 1, y2 - 1), (0, 220, 255), 6, cv2.LINE_AA)
+        cv2.putText(frame, "AREA LECTURA", (max(5, x1 + 8), max(24, y1 - 8)), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 220, 255), 2, cv2.LINE_AA)
 
         def vline(x: Optional[float], color, label: str, thickness: int = 2):
             if x is None:
@@ -505,8 +550,7 @@ class CenteringApp:
 
     def _apply_entries(self) -> None:
         old_backend = str(self.config.get("camera.backend", "dshow"))
-        entries = [self.com_entry, self.camera_backend_combo, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
-        for e in entries:
+        for e in self._adjustment_entries():
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()
             old = self.config.get(dotted)
@@ -523,6 +567,7 @@ class CenteringApp:
             except ValueError:
                 messagebox.showwarning("Valor inválido", f"No pude aplicar {dotted}={raw}")
                 return
+        self._update_vision_range_label()
         self.serial.update_config(self.config)
         self.detector.update_config(self.config)
         if str(self.config.get("camera.backend", "dshow")) != old_backend:
@@ -539,8 +584,7 @@ class CenteringApp:
         self.last_command = "Configuración guardada"
 
     def _apply_entries_silent(self) -> None:
-        entries = [self.com_entry, self.camera_backend_combo, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
-        for e in entries:
+        for e in self._adjustment_entries():
             dotted = e.dotted  # type: ignore[attr-defined]
             raw = e.get().strip()
             old = self.config.get(dotted)
@@ -556,6 +600,7 @@ class CenteringApp:
                 self.config.set(dotted, value)
             except ValueError:
                 pass
+        self._update_vision_range_label()
 
     def _toggle_fullscreen(self) -> None:
         current = bool(self.root.attributes("-fullscreen"))
