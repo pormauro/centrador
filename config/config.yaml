@@ -1,12 +1,12 @@
 app:
   title: Centrador Corrugadora
-  auto_start_enabled: true
-  fullscreen: false
+  auto_start_enabled: false
+  fullscreen: true
   update_interval_ms: 40
   save_debug_frames: false
   debug_frames_dir: logs/debug_frames
 camera:
-  index: 0
+  index: 1
   backend: dshow
   width: 1280
   height: 720
@@ -23,11 +23,11 @@ roi:
   y1: 260
   y2: 460
 calibration:
-  left_reference_x: 37
-  ideal_left_edge_x: 421
-  ideal_right_edge_x: 1092
-  right_reference_x: 1258
-  ideal_center_x: 756.5
+  left_reference_x: 157
+  ideal_left_edge_x: 389
+  ideal_right_edge_x: 890
+  right_reference_x: 1088
+  ideal_center_x: 639.5
   px_per_mm: 4.0
 vision:
   edge_search_window_px: 90

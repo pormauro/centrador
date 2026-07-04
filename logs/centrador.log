@@ -5306,3 +5306,104 @@
 2026-07-03 21:34:36,013 [INFO] centrador.serial: DRY-RUN serial: STOP
 2026-07-03 21:34:36,049 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-03 21:34:36,049 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:22,523 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 21:35:23,723 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-03 21:35:23,723 [INFO] centrador.serial: DRY-RUN serial: ENABLE 1
+2026-07-03 21:35:24,181 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,218 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 21:35:24,267 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,355 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,452 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,564 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,661 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,756 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,852 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:24,964 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,059 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,156 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,268 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,293 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 21:35:25,363 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,459 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,554 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,667 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,762 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,860 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:25,956 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,066 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,162 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,259 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,356 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,379 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 21:35:26,468 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,564 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,659 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,756 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,868 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:26,963 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,060 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,171 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,267 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,363 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,386 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 21:35:27,461 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,572 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,667 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,763 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,859 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:27,971 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,068 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,164 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,260 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,372 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,396 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 21:35:28,465 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,564 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,676 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,771 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,868 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:28,963 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:29,012 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:35:29,012 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:31,387 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-03 21:35:35,656 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:36,838 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 21:35:39,151 [INFO] centrador.app: Configuración guardada en config\config.yaml
+2026-07-03 21:35:41,099 [INFO] centrador.app: Configuración guardada en config\config.yaml
+2026-07-03 21:35:42,786 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:35:42,787 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:35:49,190 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 21:35:50,213 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 21:35:50,214 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:36:08,169 [INFO] centrador.app: Calibrado left_reference_x=157
+2026-07-03 21:36:12,159 [INFO] centrador.app: Calibrado right_reference_x=1088
+2026-07-03 21:36:16,237 [INFO] centrador.app: Calibrado ideal_left_edge_x=389
+2026-07-03 21:36:21,612 [INFO] centrador.app: Calibrado ideal_right_edge_x=890
+2026-07-03 21:36:35,552 [INFO] centrador.app: Configuración guardada en config\config.yaml
+2026-07-03 21:36:39,556 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:36:39,556 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:36:44,882 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 21:36:45,986 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 21:36:45,987 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:36:51,304 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 21:36:51,305 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 21:38:09,029 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 21:38:10,136 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 21:38:10,137 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:15:10,328 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:15:10,329 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:15:32,859 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 22:15:33,977 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:15:33,977 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:18:58,530 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:18:58,531 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:19:03,485 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 22:19:04,573 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:19:04,574 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:26:50,787 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:26:50,787 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:27:37,757 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 22:27:38,874 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:27:38,875 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:31:21,519 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:31:21,519 [INFO] centrador.serial: DRY-RUN serial: STOP

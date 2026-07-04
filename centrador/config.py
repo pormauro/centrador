@@ -11,7 +11,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "app": {
         "title": "Centrador Corrugadora",
         "auto_start_enabled": False,
-        "fullscreen": False,
+        "fullscreen": True,
         "update_interval_ms": 40,
         "save_debug_frames": False,
         "debug_frames_dir": "logs/debug_frames",
