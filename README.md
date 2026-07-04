@@ -50,13 +50,30 @@ install.bat
 arduino\centrador_arduino_uno\centrador_arduino_uno.ino
 ```
 
-5. Probar cámaras:
+5. Primer arranque seguro sin Arduino:
+
+```bat
+.\run_sin_arduino.bat
+```
+
+En la pantalla principal:
+
+1. En la sección `Cámara`, elegí el backend (`dshow`, `msmf` o `default`).
+2. Tocá `Buscar cámaras`.
+3. Elegí la cámara correcta en la lista, por ejemplo `0 - OK 1280x720`.
+4. Tocá `Usar cámara seleccionada`.
+5. Verificá que se vea la imagen correcta.
+6. Tocá `Guardar configuración`.
+
+Recién después calibrá referencias y bordes. No hace falta editar `config\config.yaml` a mano para elegir cámara.
+
+Opcionalmente, también podés guardar capturas de diagnóstico:
 
 ```bat
 probar_camaras.bat
 ```
 
-Eso guarda capturas en `logs\camera_probe`. Elegí el índice correcto y ponelo en:
+Eso guarda capturas en `logs\camera_probe`. La configuración que queda guardada es:
 
 ```yaml
 camera:

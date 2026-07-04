@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import argparse
 import logging
 import time
 from pathlib import Path
@@ -12,6 +11,7 @@ from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import messagebox, ttk
 
+from .camera_discovery import CameraInfo, open_camera, scan_cameras
 from .config import ConfigStore
 from .detector import DetectionResult, PaperDetector
 from .serial_controller import SerialController
@@ -39,6 +39,7 @@ class CenteringApp:
         self.display_h = 540
         self.last_command = ""
         self.force_show_config = not self.auto_enabled
+        self.camera_infos: list[CameraInfo] = []
 
         self._build_ui()
         self._bind_keys()
@@ -87,6 +88,19 @@ class CenteringApp:
         ttk.Button(self.panel, text="Reabrir cámara", command=self._reopen_camera).pack(fill=tk.X, pady=4)
 
         ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
+        ttk.Label(self.panel, text="Cámara", font=("Segoe UI", 11, "bold")).pack(anchor="w")
+        self.active_camera_var = tk.StringVar(value="Activa: --")
+        self.active_backend_var = tk.StringVar(value="Backend: --")
+        ttk.Label(self.panel, textvariable=self.active_camera_var).pack(anchor="w")
+        ttk.Label(self.panel, textvariable=self.active_backend_var).pack(anchor="w")
+        self.camera_backend_combo = self._labeled_combo("Backend", "camera.backend", ["dshow", "msmf", "default"])
+        self.camera_select = ttk.Combobox(self.panel, state="readonly", width=28)
+        self.camera_select.pack(fill=tk.X, pady=2)
+        ttk.Button(self.panel, text="Buscar cámaras", command=self._scan_cameras).pack(fill=tk.X, pady=2)
+        ttk.Button(self.panel, text="Usar cámara seleccionada", command=self._use_selected_camera).pack(fill=tk.X, pady=2)
+        self._refresh_camera_status_labels()
+
+        ttk.Separator(self.panel).pack(fill=tk.X, pady=8)
         ttk.Label(self.panel, text="Calibración por click", font=("Segoe UI", 11, "bold")).pack(anchor="w")
         ttk.Label(self.panel, text="Tocá el botón y luego clic en la imagen.").pack(anchor="w")
         ttk.Button(self.panel, text="1) Click referencia izquierda", command=lambda: self._set_pending("left_reference_x")).pack(fill=tk.X, pady=2)
@@ -100,7 +114,6 @@ class CenteringApp:
         ttk.Label(self.panel, text="Ajustes rápidos", font=("Segoe UI", 11, "bold")).pack(anchor="w")
 
         self.com_entry = self._labeled_entry("Puerto COM", "serial.port")
-        self.camera_backend_combo = self._labeled_combo("Medio cámara", "camera.backend", ["dshow", "msmf", "default"])
         self.tolerance_entry = self._labeled_entry("Tolerancia px", "control.tolerance_px")
         self.medium_entry = self._labeled_entry("Error medio px", "control.medium_error_px")
         self.pxmm_entry = self._labeled_entry("px por mm", "calibration.px_per_mm")
@@ -153,12 +166,10 @@ class CenteringApp:
     def _open_camera(self) -> None:
         cam_index = int(self.config.get("camera.index", 0))
         backend = str(self.config.get("camera.backend", "dshow")).lower()
-        api = {"dshow": cv2.CAP_DSHOW, "msmf": cv2.CAP_MSMF}.get(backend)
-        self.capture = cv2.VideoCapture(cam_index, api) if api is not None else cv2.VideoCapture(cam_index)
-        if not self.capture.isOpened() and api is not None:
-            self.capture = cv2.VideoCapture(cam_index)
+        self.capture = open_camera(cam_index, backend)
         if not self.capture.isOpened():
             self.logger.error("No se pudo abrir cámara index=%s backend=%s", cam_index, backend)
+            self._refresh_camera_status_labels()
             return
         width = int(self.config.get("camera.width", 1280))
         height = int(self.config.get("camera.height", 720))
@@ -176,11 +187,83 @@ class CenteringApp:
         if gain is not None:
             self.capture.set(cv2.CAP_PROP_GAIN, float(gain))
         self.logger.info("Camara abierta index=%s backend=%s", cam_index, backend)
+        self._refresh_camera_status_labels()
 
     def _reopen_camera(self) -> None:
+        self._prepare_camera_change("Reabriendo cámara")
+        self._reopen_camera_unsafe()
+
+    def _reopen_camera_unsafe(self) -> None:
         if self.capture is not None:
             self.capture.release()
+            self.capture = None
         self._open_camera()
+
+    def _prepare_camera_change(self, reason: str) -> None:
+        if self.auto_enabled:
+            self.auto_enabled = False
+            self.auto_var.set(False)
+            self.config.set("app.auto_start_enabled", False)
+            self.serial.set_enable(False)
+        self.serial.stop()
+        self.last_command = f"STOP: {reason}"
+
+    def _refresh_camera_status_labels(self) -> None:
+        if not hasattr(self, "active_camera_var"):
+            return
+        index = int(self.config.get("camera.index", 0))
+        backend = str(self.config.get("camera.backend", "dshow"))
+        opened = self.capture is not None and self.capture.isOpened()
+        status = "abierta" if opened else "sin imagen"
+        self.active_camera_var.set(f"Activa: {index} ({status})")
+        self.active_backend_var.set(f"Backend: {backend}")
+
+    def _scan_cameras(self) -> None:
+        backend = self.camera_backend_combo.get().strip() or str(self.config.get("camera.backend", "dshow"))
+        self._prepare_camera_change("Buscando cámaras")
+        if self.capture is not None:
+            self.capture.release()
+            self.capture = None
+        self.camera_select.configure(values=[])
+        self.camera_select.set("Buscando...")
+        self.root.update_idletasks()
+        self.camera_infos = scan_cameras(max_index=8, backend=backend)
+        labels = [info.label() for info in self.camera_infos]
+        self.camera_select.configure(values=labels)
+        current_index = int(self.config.get("camera.index", 0))
+        selected = next((info.label() for info in self.camera_infos if info.index == current_index), labels[0] if labels else "")
+        self.camera_select.set(selected)
+        self._reopen_camera_unsafe()
+        available_count = sum(1 for info in self.camera_infos if info.available)
+        self.last_command = f"Cámaras encontradas: {available_count}"
+
+    def _selected_camera_info(self) -> Optional[CameraInfo]:
+        selected = self.camera_select.get().strip()
+        for info in self.camera_infos:
+            if info.label() == selected:
+                return info
+        if selected:
+            try:
+                index = int(selected.split("-", 1)[0].strip())
+            except ValueError:
+                return None
+            return next((info for info in self.camera_infos if info.index == index), None)
+        return None
+
+    def _use_selected_camera(self) -> None:
+        info = self._selected_camera_info()
+        if info is None:
+            messagebox.showwarning("Cámara", "Primero usá Buscar cámaras y elegí una opción de la lista.")
+            return
+        if not info.available:
+            messagebox.showwarning("Cámara no disponible", f"La cámara {info.index} no está disponible. No se cambió la cámara activa.")
+            return
+        backend = self.camera_backend_combo.get().strip() or str(self.config.get("camera.backend", "dshow"))
+        self._prepare_camera_change("Cambiando cámara")
+        self.config.set("camera.index", int(info.index))
+        self.config.set("camera.backend", backend)
+        self._reopen_camera_unsafe()
+        self.last_command = f"Cámara activa: {info.label()}"
 
     def _schedule_update(self) -> None:
         if self.running:
@@ -421,6 +504,7 @@ class CenteringApp:
             self._save_config()
 
     def _apply_entries(self) -> None:
+        old_backend = str(self.config.get("camera.backend", "dshow"))
         entries = [self.com_entry, self.camera_backend_combo, self.tolerance_entry, self.medium_entry, self.pxmm_entry, self.roi_y1_entry, self.roi_y2_entry]
         for e in entries:
             dotted = e.dotted  # type: ignore[attr-defined]
@@ -441,7 +525,10 @@ class CenteringApp:
                 return
         self.serial.update_config(self.config)
         self.detector.update_config(self.config)
-        self._reopen_camera()
+        if str(self.config.get("camera.backend", "dshow")) != old_backend:
+            self._reopen_camera()
+        else:
+            self._refresh_camera_status_labels()
         self.serial.close()
         self.serial.open_if_needed()
 
