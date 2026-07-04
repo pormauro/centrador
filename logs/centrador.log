@@ -6266,3 +6266,168 @@
 2026-07-03 22:41:00,201 [INFO] centrador.serial: DRY-RUN serial: HB
 2026-07-03 22:41:01,251 [INFO] centrador.serial: DRY-RUN serial: HB
 2026-07-03 22:41:02,333 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:03,385 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:04,448 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:05,457 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:06,528 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:07,582 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:08,630 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:09,682 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:10,751 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:11,756 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:12,774 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:13,804 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:14,837 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:15,872 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:16,963 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:18,028 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:19,064 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:20,135 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:21,171 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:22,218 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:23,243 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:24,277 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:25,296 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:26,381 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:27,412 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:28,421 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:29,495 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:30,587 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:31,615 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:32,640 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:33,651 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:34,651 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:35,655 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:36,684 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:37,735 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:38,816 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:39,875 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:40,911 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:41,960 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:42,976 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:44,009 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:45,023 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:46,104 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:47,126 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:48,193 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:49,203 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:50,267 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:51,284 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:52,310 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:53,336 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:54,363 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:55,403 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:56,417 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:57,482 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:58,514 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:41:59,547 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:00,583 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:01,594 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:02,612 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:03,626 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:04,657 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:05,682 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:06,710 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:07,799 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:08,819 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:09,893 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:10,923 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:11,977 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:13,002 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:14,002 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:15,021 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:16,070 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:17,111 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:18,152 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:19,207 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:20,257 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:21,303 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:22,308 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:23,361 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:24,391 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:25,433 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:26,440 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:27,456 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:28,540 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:29,584 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:30,602 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:31,649 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:32,727 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:33,772 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:34,819 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:35,850 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:36,865 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:37,966 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:39,040 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:40,083 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:41,093 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:42,141 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:43,170 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:44,202 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:45,268 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:46,280 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:47,327 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:48,356 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:49,422 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:50,452 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:51,485 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:52,502 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:53,585 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:54,628 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:55,647 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:56,693 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:57,757 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:58,813 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:42:59,894 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:00,910 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:01,959 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:02,976 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:04,040 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:05,067 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:06,137 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:07,175 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:08,225 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:09,296 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:10,299 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:11,369 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:12,417 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:13,494 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:14,564 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:15,603 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:16,613 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:17,681 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:18,762 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:19,807 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:20,856 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:21,858 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:22,936 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:23,952 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:24,996 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:26,020 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:27,049 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:28,107 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:29,186 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:30,249 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:31,264 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:32,331 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:33,350 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:34,385 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:35,409 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:36,433 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-03 22:43:36,547 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:43:36,547 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-03 22:43:45,256 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-03 22:43:46,394 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:43:46,395 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-03 22:44:37,082 [INFO] centrador.app: Configuración guardada en config\config.yaml
+2026-07-03 22:45:42,812 [INFO] centrador: Iniciando Centrador Corrugadora | config=C:\Users\Mauri\Desktop\centrador_corrugadora\config\config.yaml | dry_run=False
+2026-07-03 22:45:45,634 [INFO] centrador.app: Camara abierta index=1 backend=dshow
+2026-07-03 22:45:45,635 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:45:48,659 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:45:51,674 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:45:54,682 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:45:57,694 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:46:00,698 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:46:03,707 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:46:06,715 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
+2026-07-03 22:46:09,722 [WARNING] centrador.serial: No se pudo abrir puerto serie COM3: could not open port 'COM3': FileNotFoundError(2, 'El sistema no puede encontrar el archivo especificado.', None, 2)
