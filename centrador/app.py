@@ -287,24 +287,33 @@ class CenteringApp:
             pad.geometry("800x480")
         pad.protocol("WM_DELETE_WINDOW", pad.destroy)
         display = tk.StringVar(value=var.get())
+        first_key = True
         tk.Label(pad, text=label, font=("Segoe UI", 24, "bold"), fg="#e5e7eb", bg="#0b1117", pady=8).pack(fill=tk.X)
         tk.Label(pad, textvariable=display, font=("Segoe UI", 38, "bold"), fg="#f8fafc", bg="#17212e", padx=12, pady=10).pack(fill=tk.X, padx=14, pady=(0, 8))
         grid = tk.Frame(pad, bg="#0b1117", padx=12, pady=8)
         grid.pack(fill=tk.BOTH, expand=True)
 
         def press(value: str) -> None:
+            nonlocal first_key
             cur = display.get()
             if value == "BORRAR":
                 display.set(cur[:-1])
+                first_key = False
             elif value == "LIMPIAR":
                 display.set("")
+                first_key = False
             elif value == "-":
-                display.set(cur[1:] if cur.startswith("-") else "-" + cur)
+                display.set("-" if first_key else (cur[1:] if cur.startswith("-") else "-" + cur))
+                first_key = False
             elif value == ".":
-                if "." not in cur:
+                if first_key:
+                    display.set("0.")
+                elif "." not in cur:
                     display.set((cur or "0") + ".")
+                first_key = False
             else:
-                display.set(cur + value)
+                display.set(value if first_key else cur + value)
+                first_key = False
 
         keys = [
             ("7", "8", "9", "BORRAR"),
