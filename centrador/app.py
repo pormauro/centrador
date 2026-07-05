@@ -410,11 +410,8 @@ class CenteringApp:
         except tk.TclError:
             win.geometry("1024x700")
 
-        paper_width_var = tk.StringVar(value="")
-        reference_distance_var = tk.StringVar(value="")
-        limit_width_var = tk.StringVar(value="")
-        tolerance_var = tk.StringVar(value="")
-        result_var = tk.StringVar(value="Ingresá un valor y tocá una opción de cálculo.")
+        measurement_var = tk.StringVar(value="")
+        result_var = tk.StringVar(value="Ingresá una medida real en mm y elegí si corresponde al papel o a las referencias.")
 
         header = tk.Frame(win, bg="#111827", padx=12, pady=10)
         header.pack(fill=tk.X)
@@ -437,10 +434,7 @@ class CenteringApp:
             btn.pack(side=tk.RIGHT, padx=(8, 0))
             var.trace_add("write", lambda *_args, b=btn, v=var: b.configure(text=v.get() or "--"))
 
-        value_row("Ancho real papel mm", paper_width_var)
-        value_row("Distancia real entre referencias mm", reference_distance_var)
-        value_row("Ancho para límites mm", limit_width_var)
-        value_row("Tolerancia ancho mm", tolerance_var)
+        value_row("Medida real mm", measurement_var)
 
         status_box = tk.LabelFrame(input_box, text="DATOS ACTUALES", font=("Segoe UI", 18, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
         status_box.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
@@ -458,10 +452,9 @@ class CenteringApp:
 
         action_box = tk.Frame(body, bg="#0b1117")
         action_box.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(8, 0))
-        self._hmi_button(action_box, "PX/MM POR PAPEL ACTUAL", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_current_paper(self._calculator_float(paper_width_var, "Ancho real papel mm")), result_var), "blue").pack(fill=tk.X, pady=6)
-        self._hmi_button(action_box, "PX/MM POR REFERENCIAS", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_references(self._calculator_float(reference_distance_var, "Distancia real entre referencias mm")), result_var), "blue").pack(fill=tk.X, pady=6)
+        self._hmi_button(action_box, "MEDIDA = ANCHO PAPEL", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_current_paper(self._calculator_float(measurement_var, "Medida real mm")), result_var), "blue").pack(fill=tk.X, pady=6)
+        self._hmi_button(action_box, "MEDIDA = DISTANCIA REFS", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_references(self._calculator_float(measurement_var, "Medida real mm"), update_center=True), result_var), "blue").pack(fill=tk.X, pady=6)
         self._hmi_button(action_box, "CENTRO = MITAD REFS", lambda: self._calculator_run(self._calc_center_from_references, result_var), "blue").pack(fill=tk.X, pady=6)
-        self._hmi_button(action_box, "CALCULAR LIMITES ANCHO", lambda: self._calculator_run(lambda: self._calc_width_limits_from_mm(self._calculator_float(limit_width_var, "Ancho para límites mm"), self._calculator_float(tolerance_var, "Tolerancia ancho mm")), result_var), "blue").pack(fill=tk.X, pady=6)
         tk.Label(action_box, textvariable=result_var, font=("Segoe UI", 18), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=14, pady=14, wraplength=410).pack(fill=tk.BOTH, expand=True, pady=(10, 0))
 
     def _open_var_keypad(self, var: tk.StringVar, label: str) -> None:
@@ -570,7 +563,7 @@ class CenteringApp:
         self.config.set("calibration.px_per_mm", float(px_per_mm))
         return f"PX/MM POR PAPEL ACTUAL\nANCHO DETECTADO: {result.paper_width_px} px\nANCHO INGRESADO: {paper_width_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}"
 
-    def _calc_px_per_mm_from_references(self, reference_distance_mm: float) -> str:
+    def _calc_px_per_mm_from_references(self, reference_distance_mm: float, update_center: bool = False) -> str:
         left = self.config.get("calibration.left_reference_x")
         right = self.config.get("calibration.right_reference_x")
         if left is None or right is None:
@@ -582,7 +575,12 @@ class CenteringApp:
             raise ValueError("Distancia real entre referencias mm debe ser mayor a 0.")
         px_per_mm = distance_px / reference_distance_mm
         self.config.set("calibration.px_per_mm", float(px_per_mm))
-        return f"PX/MM POR REFERENCIAS\nREF IZQ: {left} px\nREF DER: {right} px\nDISTANCIA: {distance_px:.1f} px\nDISTANCIA REAL: {reference_distance_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}"
+        center_text = ""
+        if update_center:
+            center = (float(left) + float(right)) / 2.0
+            self.config.set("calibration.ideal_center_x", float(center))
+            center_text = f"\nCENTRO IDEAL: {center:.2f} px"
+        return f"PX/MM POR REFERENCIAS\nREF IZQ: {left} px\nREF DER: {right} px\nDISTANCIA: {distance_px:.1f} px\nDISTANCIA REAL: {reference_distance_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}{center_text}"
 
     def _calc_center_from_references(self) -> str:
         left = self.config.get("calibration.left_reference_x")
@@ -592,24 +590,6 @@ class CenteringApp:
         center = (float(left) + float(right)) / 2.0
         self.config.set("calibration.ideal_center_x", float(center))
         return f"CENTRO = MITAD DE REFERENCIAS\nREF IZQ: {left} px\nREF DER: {right} px\nCENTRO IDEAL: {center:.2f} px"
-
-    def _calc_width_limits_from_mm(self, paper_width_mm: float, tolerance_mm: float) -> str:
-        px_per_mm = float(self.config.get("calibration.px_per_mm", 0.0) or 0.0)
-        if px_per_mm <= 0:
-            raise ValueError("px/mm debe ser mayor a 0.")
-        if paper_width_mm <= 0:
-            raise ValueError("Ancho real papel mm debe ser mayor a 0.")
-        if tolerance_mm < 0:
-            raise ValueError("Tolerancia ancho mm debe ser mayor o igual a 0.")
-        min_width_px = int((paper_width_mm - tolerance_mm) * px_per_mm)
-        max_width_px = int((paper_width_mm + tolerance_mm) * px_per_mm)
-        if min_width_px < 1:
-            raise ValueError("El ancho minimo calculado queda menor a 1 px.")
-        if max_width_px < min_width_px:
-            raise ValueError("El ancho maximo calculado queda menor al minimo.")
-        self.config.set("vision.min_paper_width_px", min_width_px)
-        self.config.set("vision.max_paper_width_px", max_width_px)
-        return f"LIMITES DE ANCHO\nANCHO REAL: {paper_width_mm:.2f} mm\nTOLERANCIA: {tolerance_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}\nMIN: {min_width_px} px\nMAX: {max_width_px} px"
 
     def _save_config_from_window(self) -> None:
         self._apply_entries()
