@@ -39,7 +39,11 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "px_per_mm": 4.0,
     },
     "vision": {
+        "auto_edge_detection_enabled": True,
         "edge_search_window_px": 90,
+        "edge_exclusion_margin_px": 25,
+        "edge_pair_min_separation_px": 0,
+        "edge_pair_max_separation_px": 0,
         "edge_min_confidence": 4.0,
         "profile_smooth_window": 13,
         "min_paper_width_px": 150,

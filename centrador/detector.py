@@ -37,14 +37,14 @@ class DetectionResult:
 
 
 class PaperDetector:
-    """Detecta dos bordes del papel contra referencias calibradas.
+    """Detecta automaticamente los dos bordes reales del papel en la ROI.
 
     Estrategia:
     - Recorta una ROI horizontal.
     - Convierte a gris y calcula gradiente vertical con Sobel X.
     - Promedia el gradiente por columna.
-    - Busca el pico de borde cerca de cada borde ideal calibrado.
-    - Si los bordes no tienen confianza suficiente o el ancho no cierra, declara falta de papel.
+    - Busca candidatos de borde en toda la ROI, sin depender del ancho ideal anterior.
+    - Elige el par confiable que mejor representa el papel y valida el ancho.
 
     Esto está pensado para una instalación industrial simple y calibrable, no para adivinar escenas complejas.
     """
@@ -65,15 +65,17 @@ class PaperDetector:
             self.no_paper_counter += 1
             return self._result(False, "ROI_INVALIDA", None, None, None, None, None, None, 0, 0, (x1, x2, y1, y2), False, False)
 
-        profile, gray = self._edge_profile(roi)
+        profile, signed_profile, gray = self._edge_profile(roi)
         min_conf = float(self.config.get("vision.edge_min_confidence", 4.0))
-        window = int(self.config.get("vision.edge_search_window_px", 90))
 
-        target_left = int(self.config.get("calibration.ideal_left_edge_x", 0)) - x1
-        target_right = int(self.config.get("calibration.ideal_right_edge_x", 0)) - x1
-
-        left = self._find_edge(profile, target_left, window)
-        right = self._find_edge(profile, target_right, window)
+        if bool(self.config.get("vision.auto_edge_detection_enabled", True)):
+            left, right = self._find_paper_edges(profile, signed_profile, x1)
+        else:
+            window = int(self.config.get("vision.edge_search_window_px", 90))
+            target_left = int(self.config.get("calibration.ideal_left_edge_x", 0)) - x1
+            target_right = int(self.config.get("calibration.ideal_right_edge_x", 0)) - x1
+            left = self._find_edge(profile, target_left, window)
+            right = self._find_edge(profile, target_right, window)
 
         left_x = left.x + x1 if left.x is not None else None
         right_x = right.x + x1 if right.x is not None else None
@@ -193,18 +195,76 @@ class PaperDetector:
         y2 = max(y1 + 1, min(height, y2))
         return x1, x2, y1, y2
 
-    def _edge_profile(self, roi_bgr: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def _edge_profile(self, roi_bgr: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         gray = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (5, 5), 0)
         sobel_x = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=3)
         profile = np.mean(np.abs(sobel_x), axis=0)
+        signed_profile = np.mean(sobel_x, axis=0)
         smooth_window = int(self.config.get("vision.profile_smooth_window", 13))
         if smooth_window > 1:
             if smooth_window % 2 == 0:
                 smooth_window += 1
             kernel = np.ones(smooth_window, dtype=np.float32) / float(smooth_window)
             profile = np.convolve(profile, kernel, mode="same")
-        return profile, gray
+            signed_profile = np.convolve(signed_profile, kernel, mode="same")
+        return profile, signed_profile, gray
+
+    def _find_paper_edges(self, profile: np.ndarray, signed_profile: np.ndarray, roi_x1: int) -> Tuple[EdgeDetection, EdgeDetection]:
+        candidates = self._edge_candidates(profile)
+        if len(candidates) < 2:
+            return EdgeDetection(None, 0.0, 0, (0, len(profile))), EdgeDetection(None, 0.0, len(profile) - 1, (0, len(profile)))
+
+        min_width = int(self.config.get("vision.min_paper_width_px", 150))
+        max_width = int(self.config.get("vision.max_paper_width_px", 0))
+        pair_min = int(self.config.get("vision.edge_pair_min_separation_px", 0))
+        pair_max = int(self.config.get("vision.edge_pair_max_separation_px", 0))
+        min_sep = max(min_width, pair_min)
+        max_sep = max_width if max_width > 0 else pair_max
+        ideal_center = self.config.ideal_center_x()
+        best: Optional[tuple[float, EdgeDetection, EdgeDetection]] = None
+
+        for i, left in enumerate(candidates[:-1]):
+            for right in candidates[i + 1 :]:
+                width = int((right.x or 0) - (left.x or 0))
+                if width < min_sep:
+                    continue
+                if max_sep > 0 and width > max_sep:
+                    continue
+                internal = [c for c in candidates if left.x is not None and right.x is not None and left.x < (c.x or 0) < right.x]
+                center = ((left.x or 0) + (right.x or 0)) / 2.0 + roi_x1
+                center_penalty = abs(center - ideal_center) / max(1.0, len(profile))
+                orientation_bonus = 2.0 if signed_profile[left.x or 0] * signed_profile[right.x or 0] < 0 else 0.0
+                internal_penalty = sum(c.confidence for c in internal) * 0.7
+                score = min(left.confidence, right.confidence) * 4.0 + (left.confidence + right.confidence) * 0.5 + orientation_bonus - internal_penalty - center_penalty
+                if best is None or score > best[0]:
+                    best = (score, left, right)
+
+        if best is None:
+            return EdgeDetection(None, 0.0, 0, (0, len(profile))), EdgeDetection(None, 0.0, len(profile) - 1, (0, len(profile)))
+        return best[1], best[2]
+
+    def _edge_candidates(self, profile: np.ndarray) -> list[EdgeDetection]:
+        n = len(profile)
+        margin = max(0, int(self.config.get("vision.edge_exclusion_margin_px", 25)))
+        min_conf = float(self.config.get("vision.edge_min_confidence", 4.0))
+        median = float(np.median(profile))
+        mad = float(np.median(np.abs(profile - median))) + 1e-6
+        noise = mad * 1.4826 + 1e-6
+        raw: list[EdgeDetection] = []
+        for x in range(max(1, margin), min(n - 1, n - margin)):
+            if profile[x] < profile[x - 1] or profile[x] < profile[x + 1]:
+                continue
+            confidence = max(0.0, float(profile[x] - median) / noise)
+            if confidence >= min_conf:
+                raw.append(EdgeDetection(x, min(confidence, 999.0), x, (max(0, x - 1), min(n, x + 2))))
+
+        min_distance = max(3, int(self.config.get("vision.profile_smooth_window", 13)) // 2)
+        selected: list[EdgeDetection] = []
+        for candidate in sorted(raw, key=lambda c: c.confidence, reverse=True):
+            if all(abs((candidate.x or 0) - (existing.x or 0)) >= min_distance for existing in selected):
+                selected.append(candidate)
+        return sorted(selected, key=lambda c: c.x or 0)
 
     def _find_edge(self, profile: np.ndarray, target_x: int, window: int) -> EdgeDetection:
         n = len(profile)

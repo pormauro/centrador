@@ -134,9 +134,9 @@ class CenteringApp:
             ("Operacion", [("Puerto COM", "serial.port", "text"), ("Usar Arduino/Serie", "serial.enabled", "bool"), ("AUTO al abrir", "app.auto_start_enabled", "bool"), ("Pantalla completa", "app.fullscreen", "bool")]),
             ("Camara", [("Indice camara", "camera.index", "number"), ("Ancho captura", "camera.width", "number"), ("Alto captura", "camera.height", "number"), ("FPS", "camera.fps", "number")]),
             ("Control", [("Tolerancia px", "control.tolerance_px", "number"), ("Error medio px", "control.medium_error_px", "number"), ("Pulso chico ms", "control.pulse_small_ms", "number"), ("Pulso grande ms", "control.pulse_large_ms", "number"), ("Espera entre pulsos ms", "control.cooldown_ms", "number"), ("Invertir correccion", "control.invert_correction", "bool"), ("Parar ante falla", "control.stop_on_fault", "bool")]),
-            ("Vision", [("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Rango busqueda borde px", "vision.edge_search_window_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
+            ("Vision", [("Deteccion automatica", "vision.auto_edge_detection_enabled", "bool"), ("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Margen lateral px", "vision.edge_exclusion_margin_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Separacion minima bordes px", "vision.edge_pair_min_separation_px", "number"), ("Separacion maxima bordes px", "vision.edge_pair_max_separation_px", "number"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
             ("Visualizacion", [("Paleta de lineas", "display.line_palette", "choice"), ("Ancho lineas px", "display.line_width_px", "number")]),
-            ("Calibracion", [("Referencia izquierda", "calibration.left_reference_x", "number"), ("Borde izquierdo ideal", "calibration.ideal_left_edge_x", "number"), ("Borde derecho ideal", "calibration.ideal_right_edge_x", "number"), ("Referencia derecha", "calibration.right_reference_x", "number"), ("Centro ideal", "calibration.ideal_center_x", "number"), ("px por mm", "calibration.px_per_mm", "number")]),
+            ("Calibracion", [("Centro ideal", "calibration.ideal_center_x", "number"), ("px por mm", "calibration.px_per_mm", "number"), ("Referencia izquierda", "calibration.left_reference_x", "number"), ("Referencia derecha", "calibration.right_reference_x", "number"), ("Legacy borde izq ideal", "calibration.ideal_left_edge_x", "number"), ("Legacy borde der ideal", "calibration.ideal_right_edge_x", "number")]),
             ("Inicio y energia", [("Inicio Windows", "windows.startup", "action"), ("Abrir BIOS/UEFI", "system.uefi", "action")]),
         ]
 
@@ -189,7 +189,7 @@ class CenteringApp:
 
         action_bar = tk.Frame(win, bg="#0b1117", padx=12, pady=8)
         action_bar.pack(fill=tk.X)
-        for label, key in [("1) REF IZQ", "left_reference_x"), ("2) BORDE IZQ", "ideal_left_edge_x"), ("3) BORDE DER", "ideal_right_edge_x"), ("4) REF DER", "right_reference_x")]:
+        for label, key in [("CENTRO IDEAL", "ideal_center_x"), ("REF IZQ", "left_reference_x"), ("REF DER", "right_reference_x")]:
             self._hmi_button(action_bar, label, lambda k=key: self._set_pending_and_close(k), "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
 
         body = tk.Frame(win, bg="#0b1117")
@@ -620,7 +620,7 @@ class CenteringApp:
         frame = self._read_frame()
         if frame is None:
             self.status_label.configure(text="SIN CÁMARA / SIN IMAGEN")
-            self.state_badge.configure(text="SIN CAMARA", bg="#dc2626")
+            self.state_badge.configure(text="SIN CAM", bg="#dc2626")
             self.camera_badge.configure(text="SIN CAM", bg="#dc2626")
             self._update_info(None)
             return
@@ -722,11 +722,11 @@ class CenteringApp:
         vline(result.paper_center_x, colors["paper_center"], "CENTRO PAPEL", line_w)
 
         auto_text = "AUTO ON" if self.auto_enabled else "AUTO OFF"
-        valid_text = "VISION OK" if result.valid else f"FAULT {result.fault}"
+        valid_text = self._vision_short_text(result)
         cv2.rectangle(frame, (5, h - 90), (min(w - 5, 760), h - 5), (0, 0, 0), -1)
         cv2.putText(frame, f"{auto_text} | {valid_text}", (15, h - 62), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2, cv2.LINE_AA)
         err = "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"
-        cv2.putText(frame, f"Error: {err} | Cmd: {self.last_command}", (15, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, f"Error: {err} | Cmd: {self._short_text(self.last_command, 48)}", (15, h - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
 
         if self.pending_click:
             cv2.putText(frame, f"CLICK para setear: {self.pending_click}", (15, 58), cv2.FONT_HERSHEY_SIMPLEX, 0.8, colors["roi"], 2, cv2.LINE_AA)
@@ -780,15 +780,41 @@ class CenteringApp:
         self.canvas.delete("all")
         self.canvas_image_id = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo_ref)
 
+    def _paper_width_text(self, result: DetectionResult) -> str:
+        if result.paper_width_px is None:
+            return ""
+        px_per_mm = float(self.config.get("calibration.px_per_mm", 0.0) or 0.0)
+        if px_per_mm > 0:
+            return f"{result.paper_width_px / px_per_mm:.1f} mm"
+        return f"{result.paper_width_px} px"
+
+    def _vision_short_text(self, result: DetectionResult) -> str:
+        if result.valid:
+            width_text = self._paper_width_text(result)
+            return f"VISION OK | ANCHO {width_text}" if width_text else "VISION OK"
+        fault = result.fault or "VISION"
+        if fault in ("FALTA_DE_PAPEL_O_VISION_INVALIDA", "PAPEL_DEMASIADO_ANGOSTO_O_AUSENTE", "BORDE_NO_DETECTADO"):
+            return "SIN PAPEL"
+        if fault in ("ROI_INVALIDA", "CONFIANZA_BAJA", "BORDES_CRUZADOS", "PAPEL_DEMASIADO_ANCHO", "REFERENCIA_NO_VISIBLE"):
+            return "VISION FALLA"
+        return "VISION FALLA"
+
+    @staticmethod
+    def _short_text(text: str, max_len: int) -> str:
+        if len(text) <= max_len:
+            return text
+        return text[: max(0, max_len - 3)] + "..."
+
     def _update_status(self, result: DetectionResult) -> None:
         serial_status = self.serial.status()
         serial_txt = "DRY" if serial_status.dry_run else ("OK" if serial_status.connected else f"NO {serial_status.port}")
         err = "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"
         self.status_label.configure(text=f"AUTO={'ON' if self.auto_enabled else 'OFF'} | SERIE={serial_txt} | VISION={'OK' if result.valid else result.fault} | ERROR={err} | {self.last_command}")
         if result.valid:
-            self.state_badge.configure(text="VISION OK", bg="#16a34a")
+            width_text = self._paper_width_text(result)
+            self.state_badge.configure(text=f"VISION OK | ANCHO {width_text}" if width_text else "VISION OK", bg="#16a34a")
         else:
-            self.state_badge.configure(text=f"FALLA {result.fault or 'VISION'}", bg="#dc2626")
+            self.state_badge.configure(text=self._vision_short_text(result), bg="#dc2626")
         self.mode_badge.configure(text="AUTO ON" if self.auto_enabled else "AUTO OFF", bg="#16a34a" if self.auto_enabled else "#2563eb")
         opened = self.capture is not None and self.capture.isOpened()
         self.camera_badge.configure(text=f"CAM {self.config.get('camera.index', '--')}" if opened else "SIN CAM", bg="#334155" if opened else "#dc2626")
@@ -831,7 +857,7 @@ class CenteringApp:
                 ("Centro papel", None if result.paper_center_x is None else round(result.paper_center_x, 1)),
                 ("Centro ideal", round(result.ideal_center_x, 1)),
                 ("Error", "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"),
-                ("Ancho", result.paper_width_px),
+                ("Ancho", self._paper_width_text(result) or result.paper_width_px),
                 ("Ultimo comando", self.last_command or "-"),
             ])
         if hasattr(self, "summary_var"):
@@ -899,8 +925,10 @@ class CenteringApp:
         x_img = max(0, min(w - 1, x_img))
         self.config.set(f"calibration.{self.pending_click}", int(x_img))
         self.logger.info("Calibrado %s=%s", self.pending_click, x_img)
+        pending = self.pending_click
         self.pending_click = None
-        self._recalc_ideal_center(save=False)
+        if pending in ("ideal_left_edge_x", "ideal_right_edge_x"):
+            self._recalc_ideal_center(save=False)
 
     def _use_current_center_as_ideal(self) -> None:
         if self.last_result is None or self.last_result.paper_center_x is None:

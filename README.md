@@ -26,8 +26,8 @@ La cámara debe mirar desde arriba, perpendicular, firme y con luz fija.
 
 1. Captura imagen de cámara USB.
 2. Mira una franja horizontal configurable, llamada ROI.
-3. Busca borde izquierdo y derecho del papel cerca de los puntos calibrados.
-4. Calcula centro del papel.
+3. Detecta automáticamente el borde izquierdo y derecho reales del papel dentro de la ROI.
+4. Calcula el ancho y el centro del papel en cada frame.
 5. Compara contra el centro ideal.
 6. Si el error está dentro de tolerancia, no toca nada.
 7. Si está corrido, manda al Arduino un pulso corto hacia el lado contrario.
@@ -65,7 +65,7 @@ En la pantalla principal:
 5. Verificá que se vea la imagen correcta.
 6. Tocá `Guardar configuración`.
 
-Recién después calibrá referencias y bordes. No hace falta editar `config\config.yaml` a mano para elegir cámara.
+Recién después ajustá el centro ideal y la ROI. No hace falta editar `config\config.yaml` a mano para elegir cámara.
 
 Opcionalmente, también podés guardar capturas de diagnóstico:
 
@@ -116,15 +116,14 @@ Eso es intencional. Primero calibrás y probás. Recién después ponés `true` 
 
 ## Calibración desde la pantalla
 
-Con la cámara viendo las dos referencias y el papel:
+Con la cámara viendo el papel:
 
-1. Click en `1) Click referencia izquierda` y tocá la línea/referencia izquierda en la imagen.
-2. Click en `2) Click borde izquierdo papel` y tocá el borde izquierdo del papel.
-3. Click en `3) Click borde derecho papel` y tocá el borde derecho del papel.
-4. Click en `4) Click referencia derecha` y tocá la referencia derecha.
-5. Click en `Guardar configuración`.
+1. Ajustá la ROI para que atraviese el papel y tenga buena luz.
+2. Dejá `Detección automática` activada.
+3. Cuando el papel esté en la posición deseada, tocá `USAR CENTRO ACTUAL` o `CENTRO IDEAL` y marcá el centro objetivo.
+4. Tocá `Guardar configuración`.
 
-El centro ideal se calcula como el promedio de los dos bordes ideales.
+No hace falta marcar los bordes del papel para cada ancho de rollo. Los valores `Legacy borde izq ideal` y `Legacy borde der ideal` quedan solo para calibración vieja o visualización.
 
 Si el papel en ese momento está perfectamente centrado, también podés usar:
 
@@ -173,9 +172,11 @@ Ajustes:
 
 ```yaml
 vision:
-  edge_search_window_px: 90
+  auto_edge_detection_enabled: true
+  edge_exclusion_margin_px: 25
   edge_min_confidence: 4.0
   min_paper_width_px: 150
+  max_paper_width_px: 0
   no_paper_confirm_frames: 8
 ```
 
