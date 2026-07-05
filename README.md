@@ -197,13 +197,15 @@ Para desactivarlo, destildá la misma opción. La app elimina la tarea programad
 
 Que la PC encienda sola cuando vuelve la alimentación eléctrica no depende de Windows. Se configura en el BIOS/UEFI de la computadora.
 
-En la app, sección `Encendido automático al volver la corriente`, podés tocar `Abrir BIOS/UEFI`. Windows pedirá permisos de administrador y ejecutará:
+En la app, sección `Encendido automático al volver la corriente`, podés tocar `Abrir BIOS/UEFI`. Esta función solo puede funcionar si Windows arrancó en modo UEFI. Si el equipo arrancó en modo BIOS/Legacy, Windows no puede reiniciar directo al firmware con `/fw`; la app mostrará instrucciones para entrar manualmente.
+
+Cuando el firmware detectado es UEFI, Windows pedirá permisos de administrador y la app intentará ejecutar:
 
 ```bat
 shutdown /r /fw /t 0
 ```
 
-Si el equipo no soporta esa opción, reiniciá manualmente y entrá al BIOS/UEFI presionando `DEL`, `F2`, `F10`, `F12` o `ESC` según el fabricante.
+Si el equipo no soporta esa opción, si arrancó en Legacy BIOS, o si no reinicia y entra al BIOS/UEFI, reiniciá manualmente y entrá al BIOS/UEFI presionando `DEL`, `F2`, `F10`, `F12` o `ESC` según el fabricante.
 
 Buscá una opción con alguno de estos nombres:
 

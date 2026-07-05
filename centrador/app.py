@@ -475,7 +475,8 @@ class CenteringApp:
             return
         ok, error = restart_to_uefi()
         if not ok:
-            messagebox.showerror("No se pudo abrir UEFI/BIOS", f"{error}\n\nVoy a mostrar las instrucciones manuales.")
+            self.logger.warning("No se pudo abrir UEFI/BIOS: %s", error)
+            messagebox.showerror("No se pudo abrir UEFI/BIOS", f"Motivo:\n{error}\n\nVoy a mostrar las instrucciones manuales.")
             self._show_uefi_manual_instructions()
 
     def _bind_keys(self) -> None:

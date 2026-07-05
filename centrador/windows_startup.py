@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ctypes
+import logging
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -9,6 +10,13 @@ from pathlib import Path
 
 TASK_NAME = "CentradorCorrugadora"
 SHORTCUT_NAME = "Centrador Corrugadora.lnk"
+MANUAL_UEFI_MESSAGE = (
+    "Este equipo arrancó en modo BIOS/Legacy. Windows no puede reiniciar directo a UEFI/BIOS "
+    "con shutdown /fw. Entrá manualmente con DEL/F2/ESC y configurá Restore on AC Power Loss."
+)
+
+
+logger = logging.getLogger("centrador.windows_startup")
 
 
 @dataclass
@@ -167,8 +175,45 @@ def disable_startup() -> tuple[bool, str]:
     return False, "\n".join(errors) or "No se pudo desactivar el inicio con Windows."
 
 
+def _firmware_type() -> tuple[int | None, str]:
+    firmware_type = ctypes.c_uint(0)
+    try:
+        ok = ctypes.windll.kernel32.GetFirmwareType(ctypes.byref(firmware_type))
+    except AttributeError:
+        return None, "no disponible"
+    if not ok:
+        error_code = ctypes.windll.kernel32.GetLastError()
+        return None, f"error {error_code}"
+    names = {
+        0: "desconocido",
+        1: "BIOS/Legacy",
+        2: "UEFI",
+        3: "Max",
+    }
+    value = int(firmware_type.value)
+    return value, names.get(value, f"desconocido ({value})")
+
+
 def restart_to_uefi() -> tuple[bool, str]:
+    firmware_value, firmware_name = _firmware_type()
+    logger.info("Firmware detectado: %s", firmware_name)
+    if firmware_value != 2:
+        logger.warning("Fallback manual UEFI/BIOS: %s", MANUAL_UEFI_MESSAGE)
+        return False, MANUAL_UEFI_MESSAGE
+
+    command = "shutdown.exe /r /fw /t 0"
+    logger.info("Comando UEFI ejecutado: %s", command)
     result = ctypes.windll.shell32.ShellExecuteW(None, "runas", "shutdown.exe", "/r /fw /t 0", None, 1)
-    if result > 32:
-        return True, ""
-    return False, "Windows no pudo iniciar shutdown /r /fw /t 0 con permisos de administrador."
+    logger.info("Resultado ShellExecuteW para UEFI: %s", result)
+    if result <= 32:
+        error = "Windows no pudo iniciar shutdown /r /fw /t 0 con permisos de administrador."
+        logger.warning("Fallback manual UEFI/BIOS: %s", error)
+        return False, error
+
+    fallback = (
+        "Windows aceptó iniciar shutdown /r /fw /t 0 con permisos de administrador, "
+        "pero la app no puede verificar si el firmware aceptó /fw. Si el equipo no reinicia o no entra al BIOS/UEFI, "
+        "entrá manualmente con DEL/F2/ESC y configurá Restore on AC Power Loss."
+    )
+    logger.warning("Fallback manual UEFI/BIOS si no se puede verificar: %s", fallback)
+    return False, fallback
