@@ -42,6 +42,20 @@ def _run_schtasks(args: list[str]) -> subprocess.CompletedProcess[str]:
     return subprocess.run(["schtasks", *args], capture_output=True, text=True, timeout=20)
 
 
+def _ps_quote(value: str) -> str:
+    return "'" + value.replace("'", "''") + "'"
+
+
+def _run_schtasks_elevated(args: list[str]) -> subprocess.CompletedProcess[str]:
+    ps_args = ", ".join(_ps_quote(arg) for arg in args)
+    ps = (
+        "$p = Start-Process -FilePath 'schtasks.exe' "
+        f"-ArgumentList @({ps_args}) -Verb RunAs -Wait -PassThru; "
+        "exit $p.ExitCode"
+    )
+    return subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps], capture_output=True, text=True, timeout=120)
+
+
 def _task_exists() -> bool:
     result = _run_schtasks(["/Query", "/TN", TASK_NAME])
     return result.returncode == 0
@@ -50,10 +64,16 @@ def _task_exists() -> bool:
 def _delete_task() -> tuple[bool, str]:
     if not _task_exists():
         return True, ""
-    result = _run_schtasks(["/Delete", "/TN", TASK_NAME, "/F"])
+    args = ["/Delete", "/TN", TASK_NAME, "/F"]
+    result = _run_schtasks(args)
     if result.returncode == 0:
         return True, ""
-    return False, (result.stderr or result.stdout or "No se pudo eliminar la tarea programada.").strip()
+    error = (result.stderr or result.stdout or "No se pudo eliminar la tarea programada.").strip()
+    elevated = _run_schtasks_elevated(args)
+    if elevated.returncode == 0:
+        return True, ""
+    elevated_error = (elevated.stderr or elevated.stdout or "No se pudo eliminar la tarea programada con permisos de administrador.").strip()
+    return False, f"{error}\n{elevated_error}"
 
 
 def _startup_command(config_path: Path) -> str:

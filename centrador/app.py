@@ -241,7 +241,9 @@ class CenteringApp:
             row.pack(fill=tk.X, pady=6)
             command = self._toggle_windows_startup_action if dotted == "windows.startup" else self._restart_to_uefi
             text = self.windows_startup_status_var.get() if dotted == "windows.startup" else label
-            self._hmi_button(row, text, command, "blue").pack(fill=tk.X)
+            btn = self._hmi_button(row, text, command, "blue")
+            btn.pack(fill=tk.X)
+            self.config_widgets[dotted] = btn
             return
         row = tk.Frame(parent, bg="#1f2937", padx=16, pady=18)
         row.pack(fill=tk.X, pady=8)
@@ -421,9 +423,19 @@ class CenteringApp:
             label = "Activado" if status.enabled else "Desactivado"
             detail = f" ({status.detail})" if status.detail else ""
             self.windows_startup_status_var.set(f"Inicio con Windows: {label}{detail}")
+            btn = self.config_widgets.get("windows.startup")
+            if isinstance(btn, tk.Button):
+                btn.configure(
+                    text=self.windows_startup_status_var.get(),
+                    bg="#16a34a" if status.enabled else "#374151",
+                    activebackground="#22c55e" if status.enabled else "#4b5563",
+                )
         except Exception as exc:
             self.windows_startup_var.set(False)
             self.windows_startup_status_var.set("Inicio con Windows: error")
+            btn = self.config_widgets.get("windows.startup")
+            if isinstance(btn, tk.Button):
+                btn.configure(text=self.windows_startup_status_var.get(), bg="#dc2626", activebackground="#ef4444")
             self.logger.warning("No se pudo consultar inicio con Windows: %s", exc)
 
     def _toggle_windows_startup(self) -> None:
