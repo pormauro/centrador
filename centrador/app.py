@@ -714,8 +714,14 @@ class CenteringApp:
 
         vline(self.config.get("calibration.left_reference_x"), colors["reference"], "REF IZQ", line_w)
         vline(self.config.get("calibration.right_reference_x"), colors["reference"], "REF DER", line_w)
-        vline(self.config.get("calibration.ideal_left_edge_x"), colors["ideal_edge"], "BORDE IZQ IDEAL", max(1, line_w - 2))
-        vline(self.config.get("calibration.ideal_right_edge_x"), colors["ideal_edge"], "BORDE DER IDEAL", max(1, line_w - 2))
+        ideal_left_edge_x: Optional[float] = None
+        ideal_right_edge_x: Optional[float] = None
+        if result.valid and result.paper_width_px is not None:
+            half_width = result.paper_width_px / 2.0
+            ideal_left_edge_x = result.ideal_center_x - half_width
+            ideal_right_edge_x = result.ideal_center_x + half_width
+        vline(ideal_left_edge_x, colors["ideal_edge"], "BORDE IZQ OBJ", max(1, line_w - 2))
+        vline(ideal_right_edge_x, colors["ideal_edge"], "BORDE DER OBJ", max(1, line_w - 2))
         vline(result.ideal_center_x, colors["ideal_center"], "CENTRO IDEAL", line_w)
         vline(result.left_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE IZQ", line_w + 1)
         vline(result.right_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE DER", line_w + 1)
