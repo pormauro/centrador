@@ -186,6 +186,7 @@ class CenteringApp:
         tk.Label(header, text="CONFIGURACION", font=("Segoe UI", 30, "bold"), fg="#e5e7eb", bg="#111827").pack(side=tk.LEFT)
         self._hmi_button(header, "VOLVER", win.destroy, "gray").pack(side=tk.RIGHT, padx=(8, 0))
         self._hmi_button(header, "GUARDAR CONFIGURACION", self._save_config_from_window, "green").pack(side=tk.RIGHT)
+        self._hmi_button(header, "CALCULADOR", self._open_parameter_calculator, "blue").pack(side=tk.RIGHT, padx=(0, 8))
 
         action_bar = tk.Frame(win, bg="#0b1117", padx=12, pady=8)
         action_bar.pack(fill=tk.X)
@@ -215,6 +216,7 @@ class CenteringApp:
         bottom = tk.Frame(win, bg="#111827", padx=12, pady=10)
         bottom.pack(fill=tk.X)
         self._hmi_button(bottom, "USAR CENTRO ACTUAL", self._use_current_center_as_ideal, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._hmi_button(bottom, "CALCULADOR", self._open_parameter_calculator, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
         self._hmi_button(bottom, "RECALCULAR CENTRO", lambda: self._recalc_ideal_center(save=False), "gray").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
         self._hmi_button(bottom, "CERRAR", win.destroy, "red").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
 
@@ -388,6 +390,226 @@ class CenteringApp:
             pad.destroy()
         pad.lift()
         pad.focus_force()
+
+    def _open_parameter_calculator(self) -> None:
+        self._apply_entries_silent()
+        if hasattr(self, "calculator_window") and self.calculator_window.winfo_exists():
+            self.calculator_window.lift()
+            return
+        parent = self.config_window if hasattr(self, "config_window") and self.config_window.winfo_exists() else self.root
+        win = tk.Toplevel(parent)
+        self.calculator_window = win
+        win.title("Calculador de parametros")
+        win.configure(bg="#0b1117")
+        win.transient(parent)
+        try:
+            fullscreen = bool(parent.attributes("-fullscreen"))
+            win.attributes("-fullscreen", fullscreen)
+            if not fullscreen:
+                win.geometry("1024x700")
+        except tk.TclError:
+            win.geometry("1024x700")
+
+        paper_width_var = tk.StringVar(value="")
+        reference_distance_var = tk.StringVar(value="")
+        limit_width_var = tk.StringVar(value="")
+        tolerance_var = tk.StringVar(value="")
+        result_var = tk.StringVar(value="Ingresá un valor y tocá una opción de cálculo.")
+
+        header = tk.Frame(win, bg="#111827", padx=12, pady=10)
+        header.pack(fill=tk.X)
+        tk.Label(header, text="CALCULADOR", font=("Segoe UI", 30, "bold"), fg="#e5e7eb", bg="#111827").pack(side=tk.LEFT)
+        self._hmi_button(header, "GUARDAR", lambda: self._save_calculated_parameters(result_var.get()), "green").pack(side=tk.RIGHT, padx=(8, 0))
+        self._hmi_button(header, "CERRAR", win.destroy, "red").pack(side=tk.RIGHT)
+
+        body = tk.Frame(win, bg="#0b1117", padx=12, pady=12)
+        body.pack(fill=tk.BOTH, expand=True)
+
+        input_box = tk.LabelFrame(body, text="VALORES", font=("Segoe UI", 22, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
+        input_box.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 8))
+
+        def value_row(label: str, var: tk.StringVar) -> None:
+            row = tk.Frame(input_box, bg="#1f2937", padx=14, pady=14)
+            row.pack(fill=tk.X, pady=7)
+            tk.Label(row, text=label, font=("Segoe UI", 22), fg="#e5e7eb", bg="#1f2937", anchor="w", wraplength=360).pack(side=tk.LEFT, fill=tk.X, expand=True)
+            btn = self._hmi_button(row, var.get() or "--", lambda v=var, l=label: self._open_var_keypad(v, l), "blue")
+            btn.configure(font=("Segoe UI", 26, "bold"), width=10)
+            btn.pack(side=tk.RIGHT, padx=(8, 0))
+            var.trace_add("write", lambda *_args, b=btn, v=var: b.configure(text=v.get() or "--"))
+
+        value_row("Ancho real papel mm", paper_width_var)
+        value_row("Distancia real entre referencias mm", reference_distance_var)
+        value_row("Ancho para límites mm", limit_width_var)
+        value_row("Tolerancia ancho mm", tolerance_var)
+
+        status_box = tk.LabelFrame(input_box, text="DATOS ACTUALES", font=("Segoe UI", 18, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
+        status_box.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
+        detected_width = "--" if self.last_result is None or self.last_result.paper_width_px is None else str(self.last_result.paper_width_px)
+        detected_ok = "OK" if self.last_result is not None and self.last_result.valid else "NO VALIDA"
+        current_text = (
+            f"DETECCION: {detected_ok}\n"
+            f"ANCHO DETECTADO PX: {detected_width}\n"
+            f"REF IZQ PX: {self.config.get('calibration.left_reference_x')}\n"
+            f"REF DER PX: {self.config.get('calibration.right_reference_x')}\n"
+            f"PX/MM ACTUAL: {self.config.get('calibration.px_per_mm')}\n"
+            f"CENTRO IDEAL: {self.config.get('calibration.ideal_center_x')}"
+        )
+        tk.Label(status_box, text=current_text, font=("Segoe UI", 17), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=12, pady=10).pack(fill=tk.BOTH, expand=True)
+
+        action_box = tk.Frame(body, bg="#0b1117")
+        action_box.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(8, 0))
+        self._hmi_button(action_box, "PX/MM POR PAPEL ACTUAL", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_current_paper(self._calculator_float(paper_width_var, "Ancho real papel mm")), result_var), "blue").pack(fill=tk.X, pady=6)
+        self._hmi_button(action_box, "PX/MM POR REFERENCIAS", lambda: self._calculator_run(lambda: self._calc_px_per_mm_from_references(self._calculator_float(reference_distance_var, "Distancia real entre referencias mm")), result_var), "blue").pack(fill=tk.X, pady=6)
+        self._hmi_button(action_box, "CENTRO = MITAD REFS", lambda: self._calculator_run(self._calc_center_from_references, result_var), "blue").pack(fill=tk.X, pady=6)
+        self._hmi_button(action_box, "CALCULAR LIMITES ANCHO", lambda: self._calculator_run(lambda: self._calc_width_limits_from_mm(self._calculator_float(limit_width_var, "Ancho para límites mm"), self._calculator_float(tolerance_var, "Tolerancia ancho mm")), result_var), "blue").pack(fill=tk.X, pady=6)
+        tk.Label(action_box, textvariable=result_var, font=("Segoe UI", 18), fg="#dbeafe", bg="#17212e", justify=tk.LEFT, anchor="nw", padx=14, pady=14, wraplength=410).pack(fill=tk.BOTH, expand=True, pady=(10, 0))
+
+    def _open_var_keypad(self, var: tk.StringVar, label: str) -> None:
+        parent = self.calculator_window if hasattr(self, "calculator_window") and self.calculator_window.winfo_exists() else self.root
+        pad = tk.Toplevel(parent)
+        pad.title(label)
+        pad.configure(bg="#0b1117")
+        pad.transient(parent)
+        pad.grab_set()
+        try:
+            fullscreen = bool(parent.attributes("-fullscreen"))
+            pad.attributes("-fullscreen", fullscreen)
+            if not fullscreen:
+                pad.geometry("800x480")
+        except tk.TclError:
+            pad.geometry("800x480")
+        display = tk.StringVar(value=var.get())
+        first_key = True
+        header = tk.Frame(pad, bg="#0b1117", padx=14, pady=8)
+        header.pack(fill=tk.X)
+        tk.Label(header, text=label, font=("Segoe UI", 28, "bold"), fg="#e5e7eb", bg="#0b1117", anchor="w").pack(side=tk.LEFT, fill=tk.X, expand=True)
+        tk.Label(header, textvariable=display, font=("Segoe UI", 54, "bold"), fg="#f8fafc", bg="#17212e", padx=24, pady=6, width=8).pack(side=tk.RIGHT)
+        grid = tk.Frame(pad, bg="#0b1117", padx=14, pady=10)
+        grid.pack(fill=tk.BOTH, expand=True)
+
+        def press(value: str) -> None:
+            nonlocal first_key
+            cur = display.get()
+            if value == "BORRAR":
+                display.set(cur[:-1])
+                first_key = False
+            elif value == "LIMPIAR":
+                display.set("")
+                first_key = False
+            elif value == ".":
+                display.set("0." if first_key else ((cur or "0") + "." if "." not in cur else cur))
+                first_key = False
+            else:
+                display.set(value if first_key else cur + value)
+                first_key = False
+
+        def accept() -> None:
+            raw = display.get().strip()
+            try:
+                if raw in ("", "."):
+                    raise ValueError
+                float(raw)
+            except ValueError:
+                messagebox.showwarning("Valor invalido", "Ingresá un numero valido.")
+                return
+            var.set(raw)
+            pad.destroy()
+
+        keys = [("7", "8", "9", "BORRAR"), ("4", "5", "6", "LIMPIAR"), ("1", "2", "3", "CANCELAR"), ("0", ".", "ACEPTAR")]
+        for r, row_keys in enumerate(keys):
+            grid.rowconfigure(r, weight=1, minsize=86)
+            for c, key in enumerate(row_keys):
+                grid.columnconfigure(c, weight=1, minsize=120)
+                color = "green" if key == "ACEPTAR" else ("red" if key == "CANCELAR" else ("gray" if key in ("BORRAR", "LIMPIAR") else "blue"))
+                cmd = pad.destroy if key == "CANCELAR" else (accept if key == "ACEPTAR" else lambda k=key: press(k))
+                self._keypad_button(grid, key, cmd, color).grid(row=r, column=c, sticky="nsew", padx=6, pady=6)
+        pad.lift()
+        pad.focus_force()
+
+    def _calculator_float(self, var: tk.StringVar, label: str) -> float:
+        raw = var.get().strip()
+        try:
+            return float(raw)
+        except ValueError as exc:
+            raise ValueError(f"{label}: ingresá un numero valido") from exc
+
+    def _calculator_run(self, action, result_var: tk.StringVar) -> None:
+        try:
+            summary = action()
+        except ValueError as exc:
+            messagebox.showwarning("Calculador", str(exc))
+            return
+        self._save_calculated_parameters(summary)
+        result_var.set(summary)
+
+    def _save_calculated_parameters(self, summary: str) -> None:
+        self.config.save()
+        self.detector.update_config(self.config)
+        self.last_command = "Parametros calculados"
+        for dotted in ("calibration.px_per_mm", "calibration.ideal_center_x", "vision.min_paper_width_px", "vision.max_paper_width_px"):
+            self._sync_config_window_value(dotted)
+        self.logger.info("Parametros calculados: %s", summary.replace("\n", " | "))
+
+    def _sync_config_window_value(self, dotted: str) -> None:
+        if not hasattr(self, "config_value_vars") or dotted not in self.config_value_vars:
+            return
+        value = self.config.get(dotted, "")
+        text = "" if value is None else str(value)
+        self.config_value_vars[dotted].set(text)
+        widget = self.config_widgets.get(dotted)
+        if isinstance(widget, tk.Button):
+            widget.configure(text=text or "--")
+
+    def _calc_px_per_mm_from_current_paper(self, paper_width_mm: float) -> str:
+        result = self.last_result
+        if result is None or not result.valid or result.paper_width_px is None:
+            raise ValueError("Debe existir una deteccion valida con ancho de papel.")
+        if paper_width_mm <= 0:
+            raise ValueError("Ancho real papel mm debe ser mayor a 0.")
+        px_per_mm = result.paper_width_px / paper_width_mm
+        self.config.set("calibration.px_per_mm", float(px_per_mm))
+        return f"PX/MM POR PAPEL ACTUAL\nANCHO DETECTADO: {result.paper_width_px} px\nANCHO INGRESADO: {paper_width_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}"
+
+    def _calc_px_per_mm_from_references(self, reference_distance_mm: float) -> str:
+        left = self.config.get("calibration.left_reference_x")
+        right = self.config.get("calibration.right_reference_x")
+        if left is None or right is None:
+            raise ValueError("Referencia izquierda y derecha deben existir.")
+        distance_px = abs(float(right) - float(left))
+        if distance_px <= 0:
+            raise ValueError("La distancia entre referencias en px debe ser mayor a 0.")
+        if reference_distance_mm <= 0:
+            raise ValueError("Distancia real entre referencias mm debe ser mayor a 0.")
+        px_per_mm = distance_px / reference_distance_mm
+        self.config.set("calibration.px_per_mm", float(px_per_mm))
+        return f"PX/MM POR REFERENCIAS\nREF IZQ: {left} px\nREF DER: {right} px\nDISTANCIA: {distance_px:.1f} px\nDISTANCIA REAL: {reference_distance_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}"
+
+    def _calc_center_from_references(self) -> str:
+        left = self.config.get("calibration.left_reference_x")
+        right = self.config.get("calibration.right_reference_x")
+        if left is None or right is None:
+            raise ValueError("Referencia izquierda y derecha deben existir.")
+        center = (float(left) + float(right)) / 2.0
+        self.config.set("calibration.ideal_center_x", float(center))
+        return f"CENTRO = MITAD DE REFERENCIAS\nREF IZQ: {left} px\nREF DER: {right} px\nCENTRO IDEAL: {center:.2f} px"
+
+    def _calc_width_limits_from_mm(self, paper_width_mm: float, tolerance_mm: float) -> str:
+        px_per_mm = float(self.config.get("calibration.px_per_mm", 0.0) or 0.0)
+        if px_per_mm <= 0:
+            raise ValueError("px/mm debe ser mayor a 0.")
+        if paper_width_mm <= 0:
+            raise ValueError("Ancho real papel mm debe ser mayor a 0.")
+        if tolerance_mm < 0:
+            raise ValueError("Tolerancia ancho mm debe ser mayor o igual a 0.")
+        min_width_px = int((paper_width_mm - tolerance_mm) * px_per_mm)
+        max_width_px = int((paper_width_mm + tolerance_mm) * px_per_mm)
+        if min_width_px < 1:
+            raise ValueError("El ancho minimo calculado queda menor a 1 px.")
+        if max_width_px < min_width_px:
+            raise ValueError("El ancho maximo calculado queda menor al minimo.")
+        self.config.set("vision.min_paper_width_px", min_width_px)
+        self.config.set("vision.max_paper_width_px", max_width_px)
+        return f"LIMITES DE ANCHO\nANCHO REAL: {paper_width_mm:.2f} mm\nTOLERANCIA: {tolerance_mm:.2f} mm\nPX/MM: {px_per_mm:.6f}\nMIN: {min_width_px} px\nMAX: {max_width_px} px"
 
     def _save_config_from_window(self) -> None:
         self._apply_entries()
