@@ -50,7 +50,7 @@ control:
   medium_error_px: 60
   pulse_small_ms: 100
   pulse_large_ms: 250
-  cooldown_ms: 3000
+  cooldown_ms: 1500
   max_pulse_ms: 800
   require_serial_ok_for_auto: true
   stop_on_fault: true
