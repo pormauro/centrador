@@ -75,7 +75,7 @@ class PaperDetector:
         min_conf = float(self.config.get("vision.edge_min_confidence", 4.0))
 
         if bool(self.config.get("vision.auto_edge_detection_enabled", True)):
-            left, right = self._find_paper_edges(profile, signed_profile, x1)
+            left, right = self._find_paper_edges(profile, signed_profile, gray, x1)
         else:
             window = int(self.config.get("vision.edge_search_window_px", 90))
             target_left = int(self.config.get("calibration.ideal_left_edge_x", 0)) - x1
@@ -216,7 +216,7 @@ class PaperDetector:
             signed_profile = np.convolve(signed_profile, kernel, mode="same")
         return profile, signed_profile, gray
 
-    def _find_paper_edges(self, profile: np.ndarray, signed_profile: np.ndarray, roi_x1: int) -> Tuple[EdgeDetection, EdgeDetection]:
+    def _find_paper_edges(self, profile: np.ndarray, signed_profile: np.ndarray, gray_roi: np.ndarray, roi_x1: int) -> Tuple[EdgeDetection, EdgeDetection]:
         candidates = self._edge_candidates(profile)
         if len(candidates) < 2:
             return EdgeDetection(None, 0.0, 0, (0, len(profile))), EdgeDetection(None, 0.0, len(profile) - 1, (0, len(profile)))
@@ -228,19 +228,36 @@ class PaperDetector:
         min_sep = max(min_width, pair_min)
         max_sep = max_width if max_width > 0 else pair_max
         ideal_center = self.config.ideal_center_x()
+        search_left, search_right = self._paper_search_bounds(len(profile), roi_x1)
+        candidates = [c for c in candidates if c.x is not None and search_left <= c.x <= search_right]
+        if len(candidates) < 2:
+            return EdgeDetection(None, 0.0, search_left, (search_left, search_right)), EdgeDetection(None, 0.0, search_right, (search_left, search_right))
+
+        max_center_error = float(self.config.get("vision.max_center_error_for_edge_pair_px", 0) or 0)
+        prefer_center = bool(self.config.get("vision.prefer_edges_near_center", True))
+        check_polarity = bool(self.config.get("vision.edge_polarity_check_enabled", True))
         best: Optional[tuple[float, EdgeDetection, EdgeDetection]] = None
 
         for i, left in enumerate(candidates[:-1]):
             for right in candidates[i + 1 :]:
-                width = int((right.x or 0) - (left.x or 0))
+                left_x = left.x or 0
+                right_x = right.x or 0
+                width = int(right_x - left_x)
                 if width < min_sep:
                     continue
                 if max_sep > 0 and width > max_sep:
                     continue
-                internal = [c for c in candidates if left.x is not None and right.x is not None and left.x < (c.x or 0) < right.x]
-                center = ((left.x or 0) + (right.x or 0)) / 2.0 + roi_x1
-                center_penalty = abs(center - ideal_center) / max(1.0, len(profile))
-                orientation_bonus = 2.0 if signed_profile[left.x or 0] * signed_profile[right.x or 0] < 0 else 0.0
+                if check_polarity and signed_profile[left_x] * signed_profile[right_x] >= 0:
+                    continue
+                center = (left_x + right_x) / 2.0 + roi_x1
+                center_error = abs(center - ideal_center)
+                if max_center_error > 0 and center_error > max_center_error:
+                    continue
+                if not self._paper_region_looks_valid(gray_roi, left_x, right_x):
+                    continue
+                internal = [c for c in candidates if left_x < (c.x or 0) < right_x]
+                center_penalty = center_error / max(1.0, len(profile)) if prefer_center else 0.0
+                orientation_bonus = 2.0 if signed_profile[left_x] * signed_profile[right_x] < 0 else 0.0
                 internal_penalty = sum(c.confidence for c in internal) * 0.7
                 score = min(left.confidence, right.confidence) * 4.0 + (left.confidence + right.confidence) * 0.5 + orientation_bonus - internal_penalty - center_penalty
                 if best is None or score > best[0]:
@@ -249,6 +266,56 @@ class PaperDetector:
         if best is None:
             return EdgeDetection(None, 0.0, 0, (0, len(profile))), EdgeDetection(None, 0.0, len(profile) - 1, (0, len(profile)))
         return best[1], best[2]
+
+    def _paper_search_bounds(self, profile_width: int, roi_x1: int) -> Tuple[int, int]:
+        left = int(self.config.get("vision.paper_search_x1", 0) or 0) - roi_x1
+        right_config = int(self.config.get("vision.paper_search_x2", 0) or 0)
+        right = (right_config - roi_x1) if right_config > 0 else profile_width - 1
+
+        if bool(self.config.get("vision.reject_edges_outside_references", True)):
+            margin = max(0, int(self.config.get("vision.reference_inner_margin_px", 20)))
+            ref_left = int(self.config.get("calibration.left_reference_x", 0) or 0) - roi_x1 + margin
+            ref_right = int(self.config.get("calibration.right_reference_x", 0) or 0) - roi_x1 - margin
+            if ref_right > ref_left:
+                left = max(left, ref_left)
+                right = min(right, ref_right)
+
+        left = max(1, min(profile_width - 2, left))
+        right = max(left + 1, min(profile_width - 2, right))
+        return left, right
+
+    def _paper_region_looks_valid(self, gray_roi: np.ndarray, left_x: int, right_x: int) -> bool:
+        if not bool(self.config.get("vision.paper_brightness_enabled", True)):
+            return True
+        if right_x <= left_x + 4:
+            return False
+
+        h, w = gray_roi.shape[:2]
+        left_x = max(0, min(w - 2, left_x))
+        right_x = max(left_x + 1, min(w - 1, right_x))
+        inside = gray_roi[:, left_x + 2 : right_x - 1]
+        if inside.size == 0:
+            return False
+
+        inside_mean = float(np.mean(inside))
+        if inside_mean < float(self.config.get("vision.paper_min_inside_brightness", 80)):
+            return False
+
+        band = max(8, min(40, (right_x - left_x) // 10))
+        outside_parts = []
+        if left_x - band >= 0:
+            outside_parts.append(gray_roi[:, left_x - band : left_x])
+        if right_x + band < w:
+            outside_parts.append(gray_roi[:, right_x + 1 : right_x + 1 + band])
+        if not outside_parts:
+            return True
+
+        outside = np.concatenate(outside_parts, axis=1)
+        outside_mean = float(np.mean(outside))
+        min_delta = float(self.config.get("vision.paper_min_brightness_delta", 18))
+        min_fill = float(self.config.get("vision.paper_min_fill_ratio", 0.35))
+        fill_ratio = float(np.mean(inside >= outside_mean + min_delta))
+        return inside_mean >= outside_mean + min_delta or fill_ratio >= min_fill
 
     def _edge_candidates(self, profile: np.ndarray) -> list[EdgeDetection]:
         n = len(profile)

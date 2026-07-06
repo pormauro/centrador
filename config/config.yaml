@@ -39,18 +39,41 @@ vision:
   profile_smooth_window: 13
   min_paper_width_px: 150
   max_paper_width_px: 0
+  paper_search_x1: 0
+  paper_search_x2: 0
+  prefer_edges_near_center: true
+  max_center_error_for_edge_pair_px: 0
+  reject_edges_outside_references: true
+  reference_inner_margin_px: 20
+  paper_brightness_enabled: true
+  paper_min_brightness_delta: 18
+  paper_min_inside_brightness: 80
+  paper_min_fill_ratio: 0.35
+  edge_polarity_check_enabled: true
   no_paper_confirm_frames: 8
   reference_check_enabled: false
   reference_search_window_px: 30
   reference_dark_threshold: 70
   reference_min_dark_ratio: 0.08
+vision_filter:
+  enabled: true
+  window_s: 0.5
+  min_samples: 5
+  max_sample_age_s: 2.0
+  width_jump_ratio: 0.22
+  width_jump_px: 80
+  center_jump_px: 90
+  double_width_reject_ratio: 1.35
+  new_width_confirm_frames: 12
+  hold_last_good_s: 0.8
+  log_rejected_samples: true
 control:
   invert_correction: false
-  tolerance_px: 18
+  tolerance_px: 5
   medium_error_px: 60
   pulse_small_ms: 100
   pulse_large_ms: 250
-  cooldown_ms: 1500
+  cooldown_ms: 300
   max_pulse_ms: 800
   require_serial_ok_for_auto: true
   stop_on_fault: true
