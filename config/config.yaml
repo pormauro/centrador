@@ -28,7 +28,7 @@ calibration:
   ideal_right_edge_x: 890
   right_reference_x: 1088
   ideal_center_x: 668
-  px_per_mm: 4.0
+  px_per_mm: 4.276190476190476
 vision:
   auto_edge_detection_enabled: true
   edge_search_window_px: 90

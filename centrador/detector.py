@@ -34,6 +34,12 @@ class DetectionResult:
     roi: Tuple[int, int, int, int]
     left_ref_ok: bool
     right_ref_ok: bool
+    raw_paper_width_px: Optional[int] = None
+    raw_paper_center_x: Optional[float] = None
+    filtered: bool = False
+    filter_state: str = ""
+    filter_sample_count: int = 0
+    filter_rejected_count: int = 0
 
 
 class PaperDetector:

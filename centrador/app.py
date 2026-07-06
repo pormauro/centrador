@@ -14,6 +14,7 @@ from tkinter import messagebox, ttk
 from .camera_discovery import CameraInfo, open_camera, scan_cameras
 from .config import ConfigStore
 from .detector import DetectionResult, PaperDetector
+from .measurement_filter import PaperMeasurementFilter
 from .serial_controller import SerialController
 from .windows_startup import disable_startup, enable_startup, restart_to_uefi, startup_status
 
@@ -24,6 +25,7 @@ class CenteringApp:
         self.config = config
         self.logger = logger.getChild("app")
         self.detector = PaperDetector(config)
+        self.measurement_filter = PaperMeasurementFilter(config, logger)
         self.serial = SerialController(config, logger, dry_run=dry_run)
         self.capture: Optional[cv2.VideoCapture] = None
         self.running = True
@@ -32,6 +34,7 @@ class CenteringApp:
         self.pending_click: Optional[str] = None
         self.last_frame_bgr: Optional[np.ndarray] = None
         self.last_result: Optional[DetectionResult] = None
+        self.last_raw_result: Optional[DetectionResult] = None
         self.photo_ref = None
         self.canvas_image_id = None
         self.scale_x = 1.0
@@ -135,6 +138,7 @@ class CenteringApp:
             ("Camara", [("Indice camara", "camera.index", "number"), ("Ancho captura", "camera.width", "number"), ("Alto captura", "camera.height", "number"), ("FPS", "camera.fps", "number")]),
             ("Control", [("Tolerancia px", "control.tolerance_px", "number"), ("Error medio px", "control.medium_error_px", "number"), ("Pulso chico ms", "control.pulse_small_ms", "number"), ("Pulso grande ms", "control.pulse_large_ms", "number"), ("Espera entre pulsos ms", "control.cooldown_ms", "number"), ("Invertir correccion", "control.invert_correction", "bool"), ("Parar ante falla", "control.stop_on_fault", "bool")]),
             ("Vision", [("Deteccion automatica", "vision.auto_edge_detection_enabled", "bool"), ("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Margen lateral px", "vision.edge_exclusion_margin_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Separacion minima bordes px", "vision.edge_pair_min_separation_px", "number"), ("Separacion maxima bordes px", "vision.edge_pair_max_separation_px", "number"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
+            ("Filtro vision", [("Filtro habilitado", "vision_filter.enabled", "bool"), ("Ventana segundos", "vision_filter.window_s", "number"), ("Muestras minimas", "vision_filter.min_samples", "number"), ("Salto maximo ratio", "vision_filter.width_jump_ratio", "number"), ("Salto maximo px", "vision_filter.width_jump_px", "number"), ("Salto maximo centro px", "vision_filter.center_jump_px", "number"), ("Confirmacion nuevo ancho", "vision_filter.new_width_confirm_frames", "number"), ("Mantener ultima buena s", "vision_filter.hold_last_good_s", "number"), ("Log descartes", "vision_filter.log_rejected_samples", "bool")]),
             ("Visualizacion", [("Paleta de lineas", "display.line_palette", "choice"), ("Ancho lineas px", "display.line_width_px", "number")]),
             ("Calibracion", [("Centro ideal", "calibration.ideal_center_x", "number"), ("px por mm", "calibration.px_per_mm", "number"), ("Referencia izquierda", "calibration.left_reference_x", "number"), ("Referencia derecha", "calibration.right_reference_x", "number"), ("Legacy borde izq ideal", "calibration.ideal_left_edge_x", "number"), ("Legacy borde der ideal", "calibration.ideal_right_edge_x", "number")]),
             ("Inicio y energia", [("Inicio Windows", "windows.startup", "action"), ("Abrir BIOS/UEFI", "system.uefi", "action")]),
@@ -538,6 +542,7 @@ class CenteringApp:
     def _save_calculated_parameters(self, summary: str) -> None:
         self.config.save()
         self.detector.update_config(self.config)
+        self.measurement_filter.update_config(self.config)
         self.last_command = "Parametros calculados"
         for dotted in ("calibration.px_per_mm", "calibration.ideal_center_x", "vision.min_paper_width_px", "vision.max_paper_width_px"):
             self._sync_config_window_value(dotted)
@@ -828,7 +833,13 @@ class CenteringApp:
             return
         self.last_frame_bgr = frame
         self.detector.update_config(self.config)
-        result = self.detector.detect(frame)
+        self.measurement_filter.update_config(self.config)
+        raw_result = self.detector.detect(frame)
+        self.last_raw_result = raw_result
+        if bool(self.config.get("vision_filter.enabled", True)):
+            result = self.measurement_filter.update(raw_result)
+        else:
+            result = raw_result
         self.last_result = result
         self._control_step(result)
         overlay = self._draw_overlay(frame.copy(), result)
@@ -925,6 +936,16 @@ class CenteringApp:
         vline(ideal_left_edge_x, colors["ideal_edge"], "BORDE IZQ OBJ", max(1, line_w - 2))
         vline(ideal_right_edge_x, colors["ideal_edge"], "BORDE DER OBJ", max(1, line_w - 2))
         vline(result.ideal_center_x, colors["ideal_center"], "CENTRO IDEAL", line_w)
+        raw_differs = result.raw_paper_center_x != result.paper_center_x or result.raw_paper_width_px != result.paper_width_px
+        if result.filtered and result.raw_paper_center_x is not None and raw_differs:
+            raw_left = None
+            raw_right = None
+            if self.last_raw_result is not None:
+                raw_left = self.last_raw_result.left_edge_x
+                raw_right = self.last_raw_result.right_edge_x
+            vline(raw_left, colors["raw_edge"], "RAW IZQ", max(1, line_w - 2))
+            vline(raw_right, colors["raw_edge"], "RAW DER", max(1, line_w - 2))
+            vline(result.raw_paper_center_x, colors["raw_center"], "RAW", max(1, line_w - 2))
         vline(result.left_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE IZQ", line_w + 1)
         vline(result.right_edge_x, colors["detected_edge"] if result.valid else colors["fault"], "BORDE DER", line_w + 1)
         vline(result.paper_center_x, colors["paper_center"], "CENTRO PAPEL", line_w)
@@ -950,6 +971,8 @@ class CenteringApp:
                 "ideal_center": (255, 0, 255),
                 "detected_edge": (80, 255, 80),
                 "paper_center": (255, 140, 0),
+                "raw_edge": (180, 180, 180),
+                "raw_center": (160, 160, 255),
                 "fault": (0, 0, 255),
             },
             "alto_contraste": {
@@ -959,6 +982,8 @@ class CenteringApp:
                 "ideal_center": (255, 0, 255),
                 "detected_edge": (0, 255, 0),
                 "paper_center": (255, 255, 0),
+                "raw_edge": (180, 180, 180),
+                "raw_center": (160, 160, 255),
                 "fault": (0, 0, 255),
             },
             "calida": {
@@ -968,6 +993,8 @@ class CenteringApp:
                 "ideal_center": (255, 120, 255),
                 "detected_edge": (90, 255, 120),
                 "paper_center": (255, 200, 80),
+                "raw_edge": (180, 180, 180),
+                "raw_center": (160, 160, 255),
                 "fault": (0, 0, 255),
             },
         }
@@ -996,8 +1023,25 @@ class CenteringApp:
             return f"{result.paper_width_px / px_per_mm:.1f} mm"
         return f"{result.paper_width_px} px"
 
+    def _paper_raw_width_text(self, result: DetectionResult) -> str:
+        width = result.raw_paper_width_px
+        if width is None or width == result.paper_width_px:
+            return ""
+        px_per_mm = float(self.config.get("calibration.px_per_mm", 0.0) or 0.0)
+        if px_per_mm > 0:
+            return f"{width / px_per_mm:.1f} mm"
+        return f"{width} px"
+
+    def _filter_text(self, result: DetectionResult) -> str:
+        if not result.filtered:
+            return "RAW"
+        state = result.filter_state or "FILTRADO"
+        return f"{state} {result.filter_sample_count} muestras / {result.filter_rejected_count} descartes"
+
     def _vision_short_text(self, result: DetectionResult) -> str:
         if result.valid:
+            if result.filter_state in ("OUTLIER_REJECTED", "HOLD_LAST_GOOD"):
+                return "VISION OK | FILTRANDO"
             width_text = self._paper_width_text(result)
             return f"VISION OK | ANCHO {width_text}" if width_text else "VISION OK"
         fault = result.fault or "VISION"
@@ -1019,8 +1063,7 @@ class CenteringApp:
         err = "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"
         self.status_label.configure(text=f"AUTO={'ON' if self.auto_enabled else 'OFF'} | SERIE={serial_txt} | VISION={'OK' if result.valid else result.fault} | ERROR={err} | {self.last_command}")
         if result.valid:
-            width_text = self._paper_width_text(result)
-            self.state_badge.configure(text=f"VISION OK | ANCHO {width_text}" if width_text else "VISION OK", bg="#16a34a")
+            self.state_badge.configure(text=self._vision_short_text(result), bg="#16a34a")
         else:
             self.state_badge.configure(text=self._vision_short_text(result), bg="#dc2626")
         self.mode_badge.configure(text="AUTO ON" if self.auto_enabled else "AUTO OFF", bg="#16a34a" if self.auto_enabled else "#2563eb")
@@ -1066,6 +1109,8 @@ class CenteringApp:
                 ("Centro ideal", round(result.ideal_center_x, 1)),
                 ("Error", "--" if result.error_px is None else f"{result.error_px:.1f}px / {result.error_mm:.2f}mm"),
                 ("Ancho", self._paper_width_text(result) or result.paper_width_px),
+                ("Ancho raw", self._paper_raw_width_text(result) or "-"),
+                ("Filtro", self._filter_text(result)),
                 ("Ultimo comando", self.last_command or "-"),
             ])
         if hasattr(self, "summary_var"):
@@ -1178,6 +1223,7 @@ class CenteringApp:
         self._update_vision_range_label()
         self.serial.update_config(self.config)
         self.detector.update_config(self.config)
+        self.measurement_filter.update_config(self.config)
         if str(self.config.get("camera.backend", "dshow")) != old_backend:
             self._reopen_camera()
         else:
