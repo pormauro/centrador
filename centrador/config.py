@@ -16,6 +16,14 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "save_debug_frames": False,
         "debug_frames_dir": "logs/debug_frames",
     },
+    "hmi": {
+        "monitor_index": 0,
+        "width": 0,
+        "height": 0,
+        "x": 0,
+        "y": 0,
+        "fullscreen": True,
+    },
     "camera": {
         "index": 0,
         "backend": "dshow",
@@ -131,7 +139,10 @@ class ConfigStore:
         else:
             with p.open("r", encoding="utf-8") as f:
                 raw = yaml.safe_load(f) or {}
-        return cls(path=p, data=deep_merge(DEFAULT_CONFIG, raw))
+        data = deep_merge(DEFAULT_CONFIG, raw)
+        if "hmi" not in raw and isinstance(raw.get("app"), dict) and "fullscreen" in raw["app"]:
+            data["hmi"]["fullscreen"] = bool(raw["app"]["fullscreen"])
+        return cls(path=p, data=data)
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)

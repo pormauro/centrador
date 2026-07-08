@@ -5,6 +5,13 @@ app:
   update_interval_ms: 40
   save_debug_frames: false
   debug_frames_dir: logs/debug_frames
+hmi:
+  monitor_index: 0
+  width: 0
+  height: 0
+  x: 0
+  y: 0
+  fullscreen: true
 camera:
   index: 0
   backend: dshow

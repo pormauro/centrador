@@ -9,6 +9,14 @@ app:
   save_debug_frames: false
   debug_frames_dir: "logs/debug_frames"
 
+hmi:
+  monitor_index: 0                 # indice detectado por screeninfo: 0, 1, 2...
+  width: 0                         # se guarda al aplicar desde la pantalla de configuracion
+  height: 0
+  x: 0
+  y: 0
+  fullscreen: false                # true = fullscreen/borderless en el monitor seleccionado
+
 camera:
   index: 0                        # camara USB: 0, 1, 2...
   backend: dshow                   # medio de captura: dshow, msmf o default

@@ -46,7 +46,11 @@ class CenteringApp:
         self.output_until = 0.0
         self.force_show_config = not self.auto_enabled
         self.camera_infos: list[CameraInfo] = []
+        self.monitor_infos: list[dict[str, object]] = []
+        self._config_tap_times: list[float] = []
 
+        self._refresh_monitors(log=True)
+        self._apply_hmi_window(self.root)
         self._build_ui()
         self._bind_keys()
         self._open_camera()
@@ -59,7 +63,7 @@ class CenteringApp:
         self.root.title(str(self.config.get("app.title", "Centrador Corrugadora")))
         self.root.configure(bg="#0b1117")
         self.root.option_add("*TCombobox*Listbox.font", ("Segoe UI", 24))
-        if bool(self.config.get("app.fullscreen", False)):
+        if bool(self.config.get("hmi.fullscreen", self.config.get("app.fullscreen", False))):
             self.root.attributes("-fullscreen", True)
 
         self.root.protocol("WM_DELETE_WINDOW", self.shutdown)
@@ -90,6 +94,7 @@ class CenteringApp:
         self.canvas.pack(fill=tk.BOTH, expand=True)
         self.canvas.bind("<Button-1>", self._on_canvas_click)
         self.canvas.bind("<Configure>", self._on_canvas_resize)
+        self.root.bind_all("<Button-1>", self._on_global_touch, add="+")
 
         self.status_label = tk.Label(self.left, text="Iniciando...", font=self.hmi_small_font, fg="#dbeafe", bg="#17212e", anchor="w", padx=14, pady=10)
 
@@ -134,7 +139,7 @@ class CenteringApp:
 
     def _config_sections(self) -> list[tuple[str, list[tuple[str, str, str]]]]:
         return [
-            ("Operacion", [("Puerto COM", "serial.port", "text"), ("Usar Arduino/Serie", "serial.enabled", "bool"), ("AUTO al abrir", "app.auto_start_enabled", "bool"), ("Pantalla completa", "app.fullscreen", "bool")]),
+            ("Operacion", [("Puerto COM", "serial.port", "text"), ("Usar Arduino/Serie", "serial.enabled", "bool"), ("AUTO al abrir", "app.auto_start_enabled", "bool")]),
             ("Camara", [("Indice camara", "camera.index", "number"), ("Ancho captura", "camera.width", "number"), ("Alto captura", "camera.height", "number"), ("FPS", "camera.fps", "number")]),
             ("Control", [("Tolerancia px", "control.tolerance_px", "number"), ("Error medio px", "control.medium_error_px", "number"), ("Pulso chico ms", "control.pulse_small_ms", "number"), ("Pulso grande ms", "control.pulse_large_ms", "number"), ("Espera entre pulsos ms", "control.cooldown_ms", "number"), ("Invertir correccion", "control.invert_correction", "bool"), ("Parar ante falla", "control.stop_on_fault", "bool")]),
             ("Vision", [("Deteccion automatica", "vision.auto_edge_detection_enabled", "bool"), ("ROI y1", "roi.y1", "number"), ("ROI y2", "roi.y2", "number"), ("Margen lateral px", "vision.edge_exclusion_margin_px", "number"), ("Confianza minima borde", "vision.edge_min_confidence", "number"), ("Ancho minimo papel px", "vision.min_paper_width_px", "number"), ("Ancho maximo papel px", "vision.max_paper_width_px", "number"), ("Separacion minima bordes px", "vision.edge_pair_min_separation_px", "number"), ("Separacion maxima bordes px", "vision.edge_pair_max_separation_px", "number"), ("Buscar papel desde X", "vision.paper_search_x1", "number"), ("Buscar papel hasta X", "vision.paper_search_x2", "number"), ("Preferir centro", "vision.prefer_edges_near_center", "bool"), ("Max error centro par px", "vision.max_center_error_for_edge_pair_px", "number"), ("Rechazar fuera refs", "vision.reject_edges_outside_references", "bool"), ("Margen interno refs px", "vision.reference_inner_margin_px", "number"), ("Validar brillo papel", "vision.paper_brightness_enabled", "bool"), ("Delta brillo papel", "vision.paper_min_brightness_delta", "number"), ("Brillo minimo papel", "vision.paper_min_inside_brightness", "number"), ("Fill minimo papel", "vision.paper_min_fill_ratio", "number"), ("Validar polaridad", "vision.edge_polarity_check_enabled", "bool"), ("Frames falta papel", "vision.no_paper_confirm_frames", "number")]),
@@ -211,6 +216,7 @@ class CenteringApp:
         self.config_value_vars.clear()
         self.config_widgets.clear()
         self._build_camera_config_card(content)
+        self._build_hmi_config_card(content)
         for section, items in self._config_sections():
             box = tk.LabelFrame(content, text=section.upper(), font=("Segoe UI", 22, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
             box.pack(fill=tk.X, pady=10)
@@ -240,6 +246,116 @@ class CenteringApp:
         row.pack(fill=tk.X, pady=4)
         self._hmi_button(row, "BUSCAR CAMARAS", self._scan_cameras, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
         self._hmi_button(row, "USAR SELECCIONADA", self._use_selected_camera, "green").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+
+    def _build_hmi_config_card(self, parent) -> None:
+        frame = tk.LabelFrame(parent, text="PANTALLA / HMI", font=("Segoe UI", 22, "bold"), fg="#f8fafc", bg="#0b1117", bd=2, relief=tk.GROOVE, labelanchor="nw", padx=10, pady=8)
+        frame.pack(fill=tk.X, pady=10)
+        self.hmi_monitor_status_var = tk.StringVar(value=self._hmi_monitor_status_text())
+        tk.Label(frame, textvariable=self.hmi_monitor_status_var, font=self.hmi_small_font, fg="#cbd5e1", bg="#0b1117", justify=tk.LEFT, anchor="w").pack(fill=tk.X, pady=2)
+        self.hmi_monitor_var = tk.StringVar(value="")
+        self.hmi_monitor_combo = ttk.Combobox(frame, textvariable=self.hmi_monitor_var, state="readonly", font=("Segoe UI", 24), height=8)
+        self.hmi_monitor_combo.pack(fill=tk.X, pady=8, ipady=16)
+        self.hmi_fullscreen_var = tk.BooleanVar(value=bool(self.config.get("hmi.fullscreen", self.config.get("app.fullscreen", False))))
+        tk.Checkbutton(frame, text="Fullscreen / borderless", variable=self.hmi_fullscreen_var, font=("Segoe UI", 24, "bold"), fg="#e5e7eb", bg="#0b1117", selectcolor="#111827", activebackground="#0b1117", activeforeground="#ffffff", anchor="w", padx=10, pady=10).pack(fill=tk.X, pady=4)
+        row = tk.Frame(frame, bg="#0b1117")
+        row.pack(fill=tk.X, pady=4)
+        self._hmi_button(row, "REFRESCAR MONITORES", self._refresh_hmi_monitor_controls, "blue").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._hmi_button(row, "APLICAR MONITOR", self._apply_selected_hmi_monitor, "green").pack(side=tk.LEFT, fill=tk.X, expand=True, padx=4)
+        self._refresh_hmi_monitor_controls()
+
+    def _refresh_monitors(self, log: bool = False) -> None:
+        monitors: list[dict[str, object]] = []
+        try:
+            from screeninfo import get_monitors
+
+            for index, monitor in enumerate(get_monitors()):
+                monitors.append(
+                    {
+                        "index": index,
+                        "name": getattr(monitor, "name", "") or f"Monitor {index}",
+                        "x": int(monitor.x),
+                        "y": int(monitor.y),
+                        "width": int(monitor.width),
+                        "height": int(monitor.height),
+                        "primary": bool(getattr(monitor, "is_primary", False)),
+                    }
+                )
+        except Exception as exc:
+            if log:
+                self.logger.warning("No se pudieron detectar monitores con screeninfo: %s", exc)
+        if not monitors:
+            monitors = [{"index": 0, "name": "Monitor principal", "x": 0, "y": 0, "width": int(self.root.winfo_screenwidth()), "height": int(self.root.winfo_screenheight()), "primary": True}]
+        self.monitor_infos = monitors
+        if log:
+            self.logger.info("Monitores detectados: %s", "; ".join(self._format_monitor_label(m) for m in monitors))
+
+    def _format_monitor_label(self, monitor: dict[str, object]) -> str:
+        primary = " PRINCIPAL" if bool(monitor.get("primary")) else ""
+        return f"#{monitor['index']} {monitor['width']}x{monitor['height']} @ {monitor['x']},{monitor['y']}{primary}"
+
+    def _selected_or_primary_monitor(self) -> dict[str, object]:
+        configured_index = int(self.config.get("hmi.monitor_index", 0))
+        for monitor in self.monitor_infos:
+            if int(monitor["index"]) == configured_index:
+                return monitor
+        primary = next((m for m in self.monitor_infos if bool(m.get("primary"))), self.monitor_infos[0])
+        self.logger.warning("Monitor HMI guardado #%s no existe. Usando monitor principal #%s.", configured_index, primary["index"])
+        return primary
+
+    def _apply_hmi_window(self, window: tk.Tk | tk.Toplevel) -> None:
+        monitor = self._selected_or_primary_monitor()
+        x = int(monitor["x"])
+        y = int(monitor["y"])
+        width = int(monitor["width"])
+        height = int(monitor["height"])
+        fullscreen = bool(self.config.get("hmi.fullscreen", self.config.get("app.fullscreen", False)))
+        try:
+            window.attributes("-fullscreen", False)
+            window.overrideredirect(False)
+            window.geometry(f"{width}x{height}+{x}+{y}")
+            window.update_idletasks()
+            if fullscreen:
+                window.attributes("-fullscreen", True)
+        except tk.TclError as exc:
+            self.logger.warning("No se pudo aplicar monitor HMI %sx%s+%s+%s: %s", width, height, x, y, exc)
+
+    def _hmi_monitor_status_text(self) -> str:
+        monitor = self._selected_or_primary_monitor() if self.monitor_infos else {"index": "--", "width": "--", "height": "--", "x": "--", "y": "--"}
+        return f"Actual: monitor #{monitor['index']} | {monitor['width']}x{monitor['height']} | x={monitor['x']} y={monitor['y']}"
+
+    def _refresh_hmi_monitor_controls(self) -> None:
+        self._refresh_monitors(log=True)
+        values = [self._format_monitor_label(m) for m in self.monitor_infos]
+        if hasattr(self, "hmi_monitor_combo"):
+            self.hmi_monitor_combo.configure(values=values)
+            selected = int(self._selected_or_primary_monitor()["index"])
+            if 0 <= selected < len(values):
+                self.hmi_monitor_combo.current(selected)
+            elif values:
+                self.hmi_monitor_combo.current(0)
+        if hasattr(self, "hmi_monitor_status_var"):
+            self.hmi_monitor_status_var.set(self._hmi_monitor_status_text())
+
+    def _apply_selected_hmi_monitor(self) -> None:
+        self._refresh_monitors(log=False)
+        selected = self.hmi_monitor_combo.current() if hasattr(self, "hmi_monitor_combo") else -1
+        if selected < 0 or selected >= len(self.monitor_infos):
+            messagebox.showwarning("Pantalla / HMI", "Seleccioná un monitor válido.")
+            return
+        monitor = self.monitor_infos[selected]
+        fullscreen = bool(self.hmi_fullscreen_var.get()) if hasattr(self, "hmi_fullscreen_var") else bool(self.config.get("hmi.fullscreen", False))
+        self.config.set("hmi.monitor_index", int(monitor["index"]))
+        self.config.set("hmi.width", int(monitor["width"]))
+        self.config.set("hmi.height", int(monitor["height"]))
+        self.config.set("hmi.x", int(monitor["x"]))
+        self.config.set("hmi.y", int(monitor["y"]))
+        self.config.set("hmi.fullscreen", fullscreen)
+        self.config.set("app.fullscreen", fullscreen)
+        self.config.save()
+        self._apply_hmi_window(self.root)
+        if hasattr(self, "hmi_monitor_status_var"):
+            self.hmi_monitor_status_var.set(self._hmi_monitor_status_text())
+        self.logger.info("Monitor HMI aplicado: %s fullscreen=%s", self._format_monitor_label(monitor), fullscreen)
 
     def _build_config_row(self, parent, label: str, dotted: str, kind: str) -> None:
         if kind == "action":
@@ -599,6 +715,7 @@ class CenteringApp:
     def _save_config_from_window(self) -> None:
         self._apply_entries()
         self.config.save()
+        self._apply_hmi_window(self.root)
         self.last_command = "Configuracion guardada"
         messagebox.showinfo("Configuracion", "Configuracion guardada")
 
@@ -1183,6 +1300,22 @@ class CenteringApp:
         if pending in ("ideal_left_edge_x", "ideal_right_edge_x"):
             self._recalc_ideal_center(save=False)
 
+    def _on_global_touch(self, event) -> None:
+        root_x = event.x_root - self.root.winfo_rootx()
+        root_y = event.y_root - self.root.winfo_rooty()
+        if root_x < 0 or root_y < 0 or root_x > 90 or root_y > 90:
+            return
+        now = time.monotonic()
+        self._config_tap_times = [t for t in self._config_tap_times if now - t < 2.5]
+        self._config_tap_times.append(now)
+        if len(self._config_tap_times) < 3:
+            return
+        self._config_tap_times.clear()
+        if hasattr(self, "config_window") and self.config_window.winfo_exists():
+            self.config_window.destroy()
+        else:
+            self._open_config_window()
+
     def _use_current_center_as_ideal(self) -> None:
         if self.last_result is None or self.last_result.paper_center_x is None:
             messagebox.showwarning("Sin detección", "No hay centro de papel válido para usar como ideal.")
@@ -1199,6 +1332,7 @@ class CenteringApp:
 
     def _apply_entries(self) -> None:
         old_backend = str(self.config.get("camera.backend", "dshow"))
+        self._apply_hmi_config_from_widgets()
         if hasattr(self, "config_value_vars"):
             for dotted, var in self.config_value_vars.items():
                 if not self._apply_config_value(dotted, var.get(), warn=True):
@@ -1231,6 +1365,22 @@ class CenteringApp:
         self.serial.close()
         self.serial.open_if_needed()
 
+    def _apply_hmi_config_from_widgets(self) -> None:
+        if not hasattr(self, "hmi_fullscreen_var"):
+            return
+        fullscreen = bool(self.hmi_fullscreen_var.get())
+        self.config.set("hmi.fullscreen", fullscreen)
+        self.config.set("app.fullscreen", fullscreen)
+        if hasattr(self, "hmi_monitor_combo"):
+            selected = self.hmi_monitor_combo.current()
+            if 0 <= selected < len(self.monitor_infos):
+                monitor = self.monitor_infos[selected]
+                self.config.set("hmi.monitor_index", int(monitor["index"]))
+                self.config.set("hmi.width", int(monitor["width"]))
+                self.config.set("hmi.height", int(monitor["height"]))
+                self.config.set("hmi.x", int(monitor["x"]))
+                self.config.set("hmi.y", int(monitor["y"]))
+
     def _apply_config_value(self, dotted: str, raw: str, warn: bool) -> bool:
         old = self.config.get(dotted)
         try:
@@ -1256,6 +1406,7 @@ class CenteringApp:
         self.last_command = "Configuración guardada"
 
     def _apply_entries_silent(self) -> None:
+        self._apply_hmi_config_from_widgets()
         if hasattr(self, "config_value_vars"):
             for dotted, var in self.config_value_vars.items():
                 self._apply_config_value(dotted, var.get(), warn=False)
@@ -1279,7 +1430,10 @@ class CenteringApp:
 
     def _toggle_fullscreen(self) -> None:
         current = bool(self.root.attributes("-fullscreen"))
-        self.root.attributes("-fullscreen", not current)
+        new_value = not current
+        self.config.set("hmi.fullscreen", new_value)
+        self.config.set("app.fullscreen", new_value)
+        self._apply_hmi_window(self.root)
 
     def shutdown(self) -> None:
         self.running = False
