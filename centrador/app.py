@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import sys
 import time
 from pathlib import Path
 from typing import Optional
@@ -63,8 +64,6 @@ class CenteringApp:
         self.root.title(str(self.config.get("app.title", "Centrador Corrugadora")))
         self.root.configure(bg="#0b1117")
         self.root.option_add("*TCombobox*Listbox.font", ("Segoe UI", 24))
-        if bool(self.config.get("hmi.fullscreen", self.config.get("app.fullscreen", False))):
-            self.root.attributes("-fullscreen", True)
 
         self.root.protocol("WM_DELETE_WINDOW", self.shutdown)
 
@@ -264,6 +263,44 @@ class CenteringApp:
         self._refresh_hmi_monitor_controls()
 
     def _refresh_monitors(self, log: bool = False) -> None:
+        screeninfo_monitors = self._screeninfo_monitors(log=log)
+        win32_monitors = self._win32_monitors(log=log) if sys.platform == "win32" else []
+
+        if len(win32_monitors) > len(screeninfo_monitors):
+            preferred_source = "win32"
+            ordered_sources = [win32_monitors, screeninfo_monitors]
+        else:
+            preferred_source = "screeninfo" if screeninfo_monitors else "win32"
+            ordered_sources = [screeninfo_monitors, win32_monitors]
+
+        monitors: list[dict[str, object]] = []
+        seen: set[tuple[int, int, int, int]] = set()
+        for source_monitors in ordered_sources:
+            for monitor in source_monitors:
+                key = (int(monitor["x"]), int(monitor["y"]), int(monitor["width"]), int(monitor["height"]))
+                if key in seen:
+                    continue
+                seen.add(key)
+                monitors.append(dict(monitor))
+
+        for index, monitor in enumerate(monitors):
+            monitor["index"] = index
+
+        source = preferred_source
+        if screeninfo_monitors and win32_monitors and len(monitors) > max(len(screeninfo_monitors), len(win32_monitors)):
+            source = f"combinado base={preferred_source}"
+        if not monitors:
+            source = "tk fallback"
+            monitors = [{"index": 0, "name": "Monitor principal", "x": 0, "y": 0, "width": int(self.root.winfo_screenwidth()), "height": int(self.root.winfo_screenheight()), "primary": True, "source": source}]
+
+        self.monitor_infos = monitors
+        if log:
+            details = "; ".join(self._format_monitor_label(m) for m in monitors)
+            self.logger.info("Monitores detectados: cantidad=%s fuente=%s | %s", len(monitors), source, details)
+            if len(monitors) == 1:
+                self.logger.warning("Solo se detecto 1 monitor. En Windows revisar Win+P > Extender; no usar Duplicar para seleccionar la pantalla tactil HMI.")
+
+    def _screeninfo_monitors(self, log: bool = False) -> list[dict[str, object]]:
         monitors: list[dict[str, object]] = []
         try:
             from screeninfo import get_monitors
@@ -278,26 +315,88 @@ class CenteringApp:
                         "width": int(monitor.width),
                         "height": int(monitor.height),
                         "primary": bool(getattr(monitor, "is_primary", False)),
+                        "source": "screeninfo",
                     }
                 )
         except Exception as exc:
             if log:
                 self.logger.warning("No se pudieron detectar monitores con screeninfo: %s", exc)
-        if not monitors:
-            monitors = [{"index": 0, "name": "Monitor principal", "x": 0, "y": 0, "width": int(self.root.winfo_screenwidth()), "height": int(self.root.winfo_screenheight()), "primary": True}]
-        self.monitor_infos = monitors
-        if log:
-            self.logger.info("Monitores detectados: %s", "; ".join(self._format_monitor_label(m) for m in monitors))
+        return monitors
+
+    def _win32_monitors(self, log: bool = False) -> list[dict[str, object]]:
+        monitors: list[dict[str, object]] = []
+        try:
+            import ctypes
+            from ctypes import wintypes
+
+            class RECT(ctypes.Structure):
+                _fields_ = [("left", wintypes.LONG), ("top", wintypes.LONG), ("right", wintypes.LONG), ("bottom", wintypes.LONG)]
+
+            class MONITORINFOEXW(ctypes.Structure):
+                _fields_ = [
+                    ("cbSize", wintypes.DWORD),
+                    ("rcMonitor", RECT),
+                    ("rcWork", RECT),
+                    ("dwFlags", wintypes.DWORD),
+                    ("szDevice", wintypes.WCHAR * 32),
+                ]
+
+            user32 = ctypes.windll.user32
+            monitor_enum_proc = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HMONITOR, wintypes.HDC, ctypes.POINTER(RECT), wintypes.LPARAM)
+
+            def callback(hmonitor, _hdc, _rect, _lparam):
+                info = MONITORINFOEXW()
+                info.cbSize = ctypes.sizeof(MONITORINFOEXW)
+                if not user32.GetMonitorInfoW(hmonitor, ctypes.byref(info)):
+                    return True
+                rc = info.rcMonitor
+                monitors.append(
+                    {
+                        "index": len(monitors),
+                        "name": info.szDevice or f"Monitor {len(monitors)}",
+                        "x": int(rc.left),
+                        "y": int(rc.top),
+                        "width": int(rc.right - rc.left),
+                        "height": int(rc.bottom - rc.top),
+                        "primary": bool(info.dwFlags & 1),
+                        "source": "win32",
+                    }
+                )
+                return True
+
+            if not user32.EnumDisplayMonitors(0, 0, monitor_enum_proc(callback), 0):
+                raise ctypes.WinError()
+        except Exception as exc:
+            if log:
+                self.logger.warning("No se pudieron detectar monitores con Win32: %s", exc)
+
+        return monitors
 
     def _format_monitor_label(self, monitor: dict[str, object]) -> str:
         primary = " PRINCIPAL" if bool(monitor.get("primary")) else ""
-        return f"#{monitor['index']} {monitor['width']}x{monitor['height']} @ {monitor['x']},{monitor['y']}{primary}"
+        source = f" {monitor['source']}" if monitor.get("source") else ""
+        return f"#{monitor['index']} {monitor['width']}x{monitor['height']} @ {monitor['x']},{monitor['y']}{primary}{source}"
 
     def _selected_or_primary_monitor(self) -> dict[str, object]:
         configured_index = int(self.config.get("hmi.monitor_index", 0))
         for monitor in self.monitor_infos:
             if int(monitor["index"]) == configured_index:
                 return monitor
+        saved_width = int(self.config.get("hmi.width", 0) or 0)
+        saved_height = int(self.config.get("hmi.height", 0) or 0)
+        if saved_width > 0 and saved_height > 0:
+            saved = {
+                "index": configured_index,
+                "name": "Monitor guardado",
+                "x": int(self.config.get("hmi.x", 0) or 0),
+                "y": int(self.config.get("hmi.y", 0) or 0),
+                "width": saved_width,
+                "height": saved_height,
+                "primary": False,
+                "source": "guardado",
+            }
+            self.logger.warning("Monitor HMI guardado #%s no existe entre los detectados. Usando geometria guardada %sx%s+%s+%s.", configured_index, saved_width, saved_height, saved["x"], saved["y"])
+            return saved
         primary = next((m for m in self.monitor_infos if bool(m.get("primary"))), self.monitor_infos[0])
         self.logger.warning("Monitor HMI guardado #%s no existe. Usando monitor principal #%s.", configured_index, primary["index"])
         return primary
@@ -315,7 +414,12 @@ class CenteringApp:
             window.geometry(f"{width}x{height}+{x}+{y}")
             window.update_idletasks()
             if fullscreen:
-                window.attributes("-fullscreen", True)
+                window.overrideredirect(True)
+            else:
+                window.overrideredirect(False)
+            window.update_idletasks()
+            window.lift()
+            window.focus_force()
         except tk.TclError as exc:
             self.logger.warning("No se pudo aplicar monitor HMI %sx%s+%s+%s: %s", width, height, x, y, exc)
 
@@ -1429,7 +1533,7 @@ class CenteringApp:
         self._update_vision_range_label()
 
     def _toggle_fullscreen(self) -> None:
-        current = bool(self.root.attributes("-fullscreen"))
+        current = bool(self.config.get("hmi.fullscreen", self.config.get("app.fullscreen", False)))
         new_value = not current
         self.config.set("hmi.fullscreen", new_value)
         self.config.set("app.fullscreen", new_value)
