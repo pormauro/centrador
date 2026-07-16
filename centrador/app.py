@@ -184,10 +184,7 @@ class CenteringApp:
         win.title("Configuracion")
         win.configure(bg="#0b1117")
         win.transient(self.root)
-        try:
-            win.attributes("-fullscreen", bool(self.root.attributes("-fullscreen")))
-        except tk.TclError:
-            pass
+        self._apply_child_window_to_root_monitor(win)
 
         header = tk.Frame(win, bg="#111827", padx=12, pady=10)
         header.pack(fill=tk.X)
@@ -403,6 +400,28 @@ class CenteringApp:
 
     def _apply_hmi_window(self, window: tk.Tk | tk.Toplevel) -> None:
         monitor = self._selected_or_primary_monitor()
+        self._apply_window_to_monitor(window, monitor)
+
+    def _apply_child_window_to_root_monitor(self, window: tk.Toplevel) -> None:
+        monitor = self._monitor_for_window(self.root)
+        self._apply_window_to_monitor(window, monitor)
+
+    def _monitor_for_window(self, window: tk.Tk | tk.Toplevel) -> dict[str, object]:
+        if not self.monitor_infos:
+            return self._selected_or_primary_monitor()
+        window.update_idletasks()
+        center_x = int(window.winfo_rootx() + max(1, window.winfo_width()) / 2)
+        center_y = int(window.winfo_rooty() + max(1, window.winfo_height()) / 2)
+        for monitor in self.monitor_infos:
+            x = int(monitor["x"])
+            y = int(monitor["y"])
+            width = int(monitor["width"])
+            height = int(monitor["height"])
+            if x <= center_x < x + width and y <= center_y < y + height:
+                return monitor
+        return self._selected_or_primary_monitor()
+
+    def _apply_window_to_monitor(self, window: tk.Tk | tk.Toplevel, monitor: dict[str, object]) -> None:
         x = int(monitor["x"])
         y = int(monitor["y"])
         width = int(monitor["width"])
