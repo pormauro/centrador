@@ -1679,3 +1679,150 @@
 2026-07-06 17:42:44,717 [INFO] centrador.serial: DRY-RUN serial: HB
 2026-07-06 17:42:44,888 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
 2026-07-06 17:42:44,888 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:05,467 [INFO] centrador: Iniciando Centrador Corrugadora | config=config\config.yaml | dry_run=True
+2026-07-12 17:38:06,652 [WARNING] centrador.app: No se pudieron detectar monitores con screeninfo: No module named 'screeninfo'
+2026-07-12 17:38:06,653 [INFO] centrador.app: Monitores detectados: cantidad=1 fuente=win32 | #0 1920x1080 @ 0,0 PRINCIPAL win32
+2026-07-12 17:38:06,653 [WARNING] centrador.app: Solo se detecto 1 monitor. En Windows revisar Win+P > Extender; no usar Duplicar para seleccionar la pantalla tactil HMI.
+2026-07-12 17:38:08,699 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-12 17:38:08,699 [INFO] centrador.serial: DRY-RUN serial: ENABLE 1
+2026-07-12 17:38:09,307 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:09,554 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:09,607 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:09,722 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:09,838 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:09,954 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,069 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,185 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,302 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,421 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,541 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,615 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:10,661 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,777 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:10,894 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,011 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,126 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,243 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,360 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,481 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,638 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,714 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:11,760 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:11,885 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,000 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,117 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,231 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,347 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,464 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,581 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,706 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,781 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:12,829 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:12,950 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,069 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,192 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,308 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,423 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,538 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,656 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,771 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:13,843 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:13,888 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,006 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,129 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,231 [WARNING] centrador.app: No se pudieron detectar monitores con screeninfo: No module named 'screeninfo'
+2026-07-12 17:38:14,248 [INFO] centrador.app: Monitores detectados: cantidad=1 fuente=win32 | #0 1920x1080 @ 0,0 PRINCIPAL win32
+2026-07-12 17:38:14,249 [WARNING] centrador.app: Solo se detecto 1 monitor. En Windows revisar Win+P > Extender; no usar Duplicar para seleccionar la pantalla tactil HMI.
+2026-07-12 17:38:14,353 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,723 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,850 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:14,926 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:14,973 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,096 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,220 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,344 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,474 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,599 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,719 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,839 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:15,961 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,038 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:16,084 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,205 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,326 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,448 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,576 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,705 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,824 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:16,945 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,066 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,142 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:17,189 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,311 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,431 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,551 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,671 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,797 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:17,926 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,051 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,180 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,256 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:18,303 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,423 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,548 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,668 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,788 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:18,908 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,034 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,159 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,281 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,354 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:19,400 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,520 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,640 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,759 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,877 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:19,998 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,124 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,249 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,370 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,443 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:20,489 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,610 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,729 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,850 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:20,968 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,089 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,250 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,369 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,449 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:21,496 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,621 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,741 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,861 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:21,981 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,100 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,221 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,340 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,459 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,531 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:22,579 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,702 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,824 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:22,945 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,065 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,186 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,307 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,427 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,546 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,618 [INFO] centrador.serial: DRY-RUN serial: HB
+2026-07-12 17:38:23,664 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:23,751 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-12 17:38:23,791 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:26,060 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-12 17:38:33,745 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:38:35,217 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-12 17:38:59,677 [INFO] centrador.serial: DRY-RUN serial: STOP
+2026-07-12 17:39:01,898 [INFO] centrador.app: Camara abierta index=0 backend=dshow
+2026-07-12 18:31:29,515 [INFO] centrador.serial: DRY-RUN serial: ENABLE 0
+2026-07-12 18:31:29,516 [INFO] centrador.serial: DRY-RUN serial: STOP
